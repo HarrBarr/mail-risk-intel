@@ -225,7 +225,7 @@ and rate-limit waits were absorbed by retries.
 | E006 threat | high | **high** | threat-language |
 | E007 HR calendar | none | none | |
 | E008 phishing | high | **high** | spoofed-domain, credential-phishing, urgency, suspicious-link |
-| E009 normal invoice | none/low | low | routine-invoice |
+| E009 normal invoice | none/low | none | |
 | E010 whistleblower | medium | medium | accounting-irregularity, whistleblower-report |
 
 E004's rationale shows the cross-email reasoning working: *"requests payment to a new bank account

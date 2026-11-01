@@ -46,6 +46,12 @@ class Settings(BaseSettings):
     # The organisation's own domain: used to spot lookalike / spoofed senders.
     ORG_DOMAIN: str = "arcline.com"
 
+    @field_validator("*", mode="before")
+    @classmethod
+    def _comment_is_empty(cls, value: object) -> object:
+        """docker compose's env_file reads `KEY=   # note` as the value '# note'."""
+        return "" if isinstance(value, str) and value.strip().startswith("#") else value
+
     @field_validator("LLM_FALLBACK_CHAIN")
     @classmethod
     def _normalise_chain(cls, value: str) -> str:

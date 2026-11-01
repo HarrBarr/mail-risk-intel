@@ -148,6 +148,17 @@ the way the agent had flagged as the top risk: **Groq had retired `llama-3.3-70b
 4. re-ran the **full seed set through the real worker**: 157 s, 10/10 levels as expected, zero
    rules fallbacks (README, "Results with a real model").
 
+5. ran the stack **in Docker** for the human to check, and found two more bugs before handing it over:
+   - **`.env` comments became values.** Docker Compose reads `GEMINI_API_KEY=   # note` as the value
+     `# note`; pydantic, used natively, doesn't. So a reviewer who left the Groq key empty would get a
+     "configured" Groq with a junk key, and `/health` would wrongly say `mode: llm`. Fixed in the
+     template (comments on their own lines), with a config guard and a test.
+   - **The model over-flagged E009** (the routine invoice) as *high*. It treated "no prior
+     correspondence" as evidence of a new account, and claimed a spoofed domain that code had not
+     detected. The prompt now says missing history is not suspicious, and that spoofing tags require a
+     deterministic signal. Checked on both sides: E009 came out `none` 3 times out of 3, while E004
+     and E001 stayed `high`.
+
 It also documented the "Groq retires models" risk in the README, because a silent fall to rules is
 the failure mode a reviewer would most likely hit.
 

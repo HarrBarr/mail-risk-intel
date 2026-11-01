@@ -37,3 +37,9 @@ def test_dev_override_only_applies_in_development() -> None:
     assert get_llm(make(**base)).provider == "groq"
     dev = get_llm(make(APP_ENV="development", **base))
     assert (dev.provider, dev.model) == ("gemini", "gemini-x")
+
+
+def test_compose_style_comment_values_count_as_empty() -> None:
+    settings = make(GROQ_API_KEY="# free, no card: https://console.groq.com/keys", LLM_FALLBACK_CHAIN="groq,rules")
+    assert settings.GROQ_API_KEY == ""
+    assert get_provider_chain(settings) == []

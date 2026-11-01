@@ -46,6 +46,11 @@ Risk guidance (decide the level from the strongest pattern present):
   credential-phishing, data-exfiltration, mnpi-risk, threat-language, accounting-irregularity,
   whistleblower-report, harassment. Add others if needed.
 - Deterministic signals were computed by code and are reliable facts; weigh them, and cite them.
+  Do not use the tags spoofed-domain or suspicious-link unless a deterministic signal reports it.
+- Missing sender history is NOT suspicious: most legitimate mail comes from senders with no earlier
+  email in this mailbox. Only call a bank account "new" or "changed" if the email itself says so
+  or sender_history lists a different account. A vendor invoice paid to the account it names, with
+  no change requested, is routine (none).
 
 Graph guidance:
 - People: one entity per person; use their name when the email states it (e.g. a signature or
@@ -83,7 +88,7 @@ def build_messages(
     payload = {
         "extraction": extraction,
         "deterministic_signals": [{"tag": s.tag, "evidence": s.evidence} for s in signals],
-        "sender_history": history or "no earlier emails from this sender",
+        "sender_history": history or "none on record (not suspicious in itself)",
     }
     messages: list[BaseMessage] = [
         SystemMessage(SYSTEM.format(org_domain=org_domain)),
