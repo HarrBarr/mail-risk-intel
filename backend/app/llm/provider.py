@@ -53,6 +53,10 @@ def ollama_has_model(base_url: str, model: str) -> bool:
     return ok
 
 
+def _is_reasoning_model(name: str) -> bool:
+    return any(tag in name.lower() for tag in ("gpt-oss", "qwen3", "deepseek-r1"))
+
+
 def build_chat_model(provider: str, model: str | None, settings: Settings) -> LLMClient:
     timeout = settings.LLM_TIMEOUT_SECONDS
     # Retries are handled by our own tenacity policy (see llm/invoke.py), so SDK retries are off.
@@ -62,6 +66,10 @@ def build_chat_model(provider: str, model: str | None, settings: Settings) -> LL
         from langchain_groq import ChatGroq
 
         name = model or settings.GROQ_MODEL
+        # Reasoning models spend output tokens thinking; on an 8k tokens/minute free tier that matters.
+        reasoning: dict[str, Any] = (
+            {"reasoning_effort": settings.GROQ_REASONING_EFFORT} if _is_reasoning_model(name) else {}
+        )
         chat: Any = ChatGroq(
             model=name,
             api_key=SecretStr(settings.GROQ_API_KEY),
@@ -69,6 +77,7 @@ def build_chat_model(provider: str, model: str | None, settings: Settings) -> LL
             timeout=timeout,
             max_retries=0,
             model_kwargs={"response_format": {"type": "json_object"}},
+            **reasoning,
         )
     elif provider == "gemini":
         if not settings.GEMINI_API_KEY:

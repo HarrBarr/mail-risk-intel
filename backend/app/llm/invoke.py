@@ -56,8 +56,28 @@ def _status_code(exc: BaseException) -> int | None:
     return value if isinstance(value, int) else None
 
 
+def _error_body(exc: BaseException) -> dict[str, Any]:
+    """The provider's JSON error object, e.g. Groq's {"message", "type", "code", "failed_generation"}."""
+    body = getattr(exc, "body", None)
+    if isinstance(body, dict):
+        inner = body.get("error", body)
+        return inner if isinstance(inner, dict) else {}
+    return {}
+
+
+def failed_generation(exc: BaseException) -> str | None:
+    """Groq's JSON mode rejects invalid output server-side (400 json_validate_failed) but returns
+    what the model generated. That is an *output* problem, so it goes to the repair path."""
+    body = _error_body(exc)
+    if body.get("code") == "json_validate_failed":
+        return str(body.get("failed_generation") or "")
+    return None
+
+
 def is_transient(exc: BaseException) -> bool:
     status = _status_code(exc)
+    if status == 429 and "request too large" in str(_error_body(exc).get("message", exc)).lower():
+        return False  # exceeds the per-minute budget on its own: waiting cannot fix it
     if status is not None:
         return status == 429 or status >= 500 or status == 408
     if isinstance(exc, TimeoutError | ConnectionError):
@@ -86,7 +106,7 @@ def _wait(base: wait_exponential, cap: float) -> Any:
 
 
 def invoke_text(
-    client: LLMClient, messages: list[BaseMessage], max_retries: int, max_wait: float = 20.0
+    client: LLMClient, messages: list[BaseMessage], max_retries: int, max_wait: float = 60.0
 ) -> tuple[str, int, int]:
     """Return (text, attempts, latency_ms). Raises LLMCallError when this provider is exhausted."""
     attempts = 0
@@ -103,6 +123,9 @@ def invoke_text(
                 attempts += 1
                 response = client.chat.invoke(messages)
     except Exception as exc:  # noqa: BLE001 - every provider SDK has its own hierarchy
+        generated = failed_generation(exc)
+        if generated is not None:
+            return generated, attempts, int((time.monotonic() - start) * 1000)
         raise LLMCallError(client.provider, f"{type(exc).__name__}: {exc}"[:500], attempts) from exc
     content = response.content
     if isinstance(content, list):  # some providers return content blocks

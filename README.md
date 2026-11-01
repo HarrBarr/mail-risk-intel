@@ -30,7 +30,7 @@ worker; the inbox updates live as each one finishes.
 
 | You have | Run | What happens |
 |---|---|---|
-| A Groq key (free) | `docker compose up --build` | Groq `llama-3.3-70b-versatile` for both agents |
+| A Groq key (free) | `docker compose up --build` | Groq `openai/gpt-oss-120b` for both agents; the seed set takes ~2.5 min on the free tier |
 | No key, want a real model | `docker compose --profile local up --build` | Starts Ollama, pulls `OLLAMA_MODEL` (≈5 GB, once); results switch from rules to the LLM as soon as the model is ready |
 | Ollama already on your machine | set `OLLAMA_BASE_URL=http://host.docker.internal:11434` and `OLLAMA_MODEL` in `.env` | Uses your local model |
 | Nothing | `docker compose up --build` | Rules engine only; the UI shows a banner and tags results `fallback` |
@@ -183,9 +183,16 @@ resume isn't worth the complexity when one run is two LLM calls.
 
 ## LLM choice and fallback behaviour
 
-- **Default: Groq free tier, `llama-3.3-70b-versatile`.** It is fast (about 1–2 s per call), needs no
-  card, and its JSON mode is reliable. Rate limits (429) are handled with `Retry-After`, and the
-  worker's concurrency defaults to 2.
+- **Default: Groq free tier, `openai/gpt-oss-120b`** with `reasoning_effort=low`. Calls take about
+  1–5 s and need no card. The free tier's real limit is **8,000 tokens per minute**, and one email uses
+  about 4–5k tokens across both agents. So the pipeline expects 429s: it waits for the time Groq
+  asks for (`Retry-After`, up to 60 s, `LLM_MAX_RETRIES=4`), and the worker's concurrency defaults
+  to 2. "Request too large" 429s are not retried, since they can never succeed. When Groq's
+  server-side JSON check rejects an output (`400 json_validate_failed`), the rejected text goes to
+  the normal repair retry instead of counting as an outage.
+- **Groq retires models often.** If `GROQ_MODEL` is no longer offered, calls fail with
+  `model_not_found` and results quietly come from the next provider or from rules (visible as the
+  `fallback` chip). List the current models at https://console.groq.com/docs/models.
 - **Gemini free tier** works the same way: set `GEMINI_API_KEY`.
 - **Ollama** is fully offline. Any model works; tested with `qwen2.5:7b`.
 - **Rules** are always last in `LLM_FALLBACK_CHAIN` (default `groq,gemini,ollama,rules`). Providers
@@ -204,8 +211,30 @@ results are labelled `fallback`. When a model becomes reachable, use **Retry** o
 
 ### Results with a real model
 
-I tuned the prompts against the *weakest* model a reviewer might plausibly use: `qwen2.5:7b` on
-local Ollama, running on CPU. These are the cases that need judgment:
+**Groq (the default), full seed set, free tier, worker at concurrency 2: 157 s for all 10 emails.**
+Every email was processed by Groq; none fell back to rules. One assessment needed the repair retry,
+and rate-limit waits were absorbed by retries.
+
+| Email | Expected | Groq `gpt-oss-120b` | Tags |
+|---|---|---|---|
+| E001 CEO impersonation | high | **high** | spoofed-domain, urgency, payment-change, financial-anomaly |
+| E002 IT notice | none | none | |
+| E003 data to personal address | high | **high** | data-exfiltration, secrecy, internal-to-personal |
+| E004 vendor bank change | high | **high** | payment-change, financial-anomaly, bank-detail-change |
+| E005 insider tip | high | **high** | mnpi-risk, secrecy, internal-to-personal |
+| E006 threat | high | **high** | threat-language |
+| E007 HR calendar | none | none | |
+| E008 phishing | high | **high** | spoofed-domain, credential-phishing, urgency, suspicious-link |
+| E009 normal invoice | none/low | low | routine-invoice |
+| E010 whistleblower | medium | medium | accounting-irregularity, whistleblower-report |
+
+E004's rationale shows the cross-email reasoning working: *"requests payment to a new bank account
+ending 9902, which differs from the known account ending 6621, and the invoice amount $47,300 is 3.4x
+the prior median"*. In the graph, Northgate, `routing 044000037` and `account ending 6621` are each
+a single node shared by E004 and E009.
+
+**Local Ollama.** I tuned the prompts against the *weakest* model a reviewer might plausibly use:
+`qwen2.5:7b` running on CPU. These are the cases that need judgment:
 
 | Email | Level | Rationale (abridged, verbatim from the model) |
 |---|---|---|
@@ -216,8 +245,7 @@ local Ollama, running on CPU. These are the cases that need judgment:
 
 All four produced valid JSON on the first attempt, with no repair retry needed. The first prompt
 version had rated E001 only *medium* and merged account numbers; `PROCESS.md` §3.1 has the
-before/after. On CPU a 7B model takes 2–10 minutes per email. Groq's 70B takes seconds, which is why
-it is the default.
+before/after. On CPU a 7B model takes 2–10 minutes per email, which is why Groq is the default.
 
 ---
 

@@ -17,7 +17,8 @@ class Settings(BaseSettings):
 
     LLM_PROVIDER: Provider = "groq"
     GROQ_API_KEY: str = ""
-    GROQ_MODEL: str = "llama-3.3-70b-versatile"
+    GROQ_MODEL: str = "openai/gpt-oss-120b"
+    GROQ_REASONING_EFFORT: Literal["low", "medium", "high"] = "low"
     GEMINI_API_KEY: str = ""
     GEMINI_MODEL: str = "gemini-2.0-flash"
     OLLAMA_BASE_URL: str = "http://ollama:11434"
@@ -33,7 +34,7 @@ class Settings(BaseSettings):
     LLM_FALLBACK_CHAIN: str = "groq,ollama,rules"
 
     LLM_TIMEOUT_SECONDS: float = 30
-    LLM_MAX_RETRIES: int = 2
+    LLM_MAX_RETRIES: int = 4  # rate-limit waits (Retry-After) are the common case on free tiers
     WORKER_CONCURRENCY: int = 2
     WORKER_POLL_INTERVAL_SECONDS: float = 2
 

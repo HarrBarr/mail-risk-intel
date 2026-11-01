@@ -121,3 +121,27 @@ def test_invoke_gives_up_after_max_retries() -> None:
     with pytest.raises(LLMCallError) as info:
         invoke_text(client, [], max_retries=2)
     assert info.value.attempts == 3 and info.value.provider == "groq"
+
+
+class _GroqError(Exception):
+    """Shaped like groq.APIStatusError: status_code + parsed JSON `body`."""
+
+    def __init__(self, code: int, error: dict[str, str]) -> None:
+        super().__init__(error.get("message", ""))
+        self.status_code = code
+        self.body = {"error": error}
+        self.response = httpx.Response(code)
+
+
+def test_groq_server_side_json_failure_returns_output_for_repair() -> None:
+    err = _GroqError(400, {"code": "json_validate_failed", "failed_generation": '{"risk": oops'})
+    text, attempts, _ = invoke_text(fake_client("groq", [err]), [], max_retries=2)
+    assert text == '{"risk": oops' and attempts == 1  # handed to the validator, not treated as an outage
+
+
+def test_request_too_large_is_not_retried() -> None:
+    err = _GroqError(
+        429, {"message": "Request too large for model x on tokens per minute", "code": "rate_limit_exceeded"}
+    )
+    assert is_transient(err) is False
+    assert is_transient(_GroqError(429, {"message": "Rate limit reached for model x", "code": "rate_limit_exceeded"}))

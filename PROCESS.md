@@ -128,6 +128,29 @@ The main agent then:
   overflow, no console errors. It spotted a focus ring drawn around a programmatically focused
   heading on mobile, and fixed it at the global CSS rule that caused it.
 
+### 3.5 The default provider, tested for real
+
+Groq was the one path that couldn't be tested until a key was available, and the agent said so
+rather than claiming it worked. Once the human added a key, the first live run failed in exactly
+the way the agent had flagged as the top risk: **Groq had retired `llama-3.3-70b-versatile`**
+(`model_not_found`). The fallback chain hid it, and every email quietly came from rules. The agent:
+
+1. listed the models the key could actually use, and ran the live tests against the two plausible
+   candidates instead of guessing;
+2. ruled out `qwen/qwen3.8-27b`: every request exceeded the free tier's per-minute output budget
+   (a 429 that retrying can never fix);
+3. picked `openai/gpt-oss-120b`, then found two Groq-specific failure modes and handled them in
+   code, with tests:
+   - Groq's server-side JSON check returns `400 json_validate_failed` with the rejected text. That is
+     an *output* problem, so it now goes to the repair retry instead of skipping the provider.
+   - 429s are routine at 8k tokens per minute. "Request too large" is now classified as permanent,
+     rate-limit retries are more patient, and `reasoning_effort=low` cuts tokens per call;
+4. re-ran the **full seed set through the real worker**: 157 s, 10/10 levels as expected, zero
+   rules fallbacks (README, "Results with a real model").
+
+It also documented the "Groq retires models" risk in the README, because a silent fall to rules is
+the failure mode a reviewer would most likely hit.
+
 ✍️ *Any points where you, the human, stepped in: re-scoped, rejected an approach, asked for
 something different. The session above contains the decisions you made up front (track, repo, plan,
 identity, visibility); add anything you changed after reviewing the result.*
@@ -151,7 +174,8 @@ identity, visibility); add anything you changed after reviewing the result.*
 | `ruff`, `mypy` (backend) | clean |
 | Frontend `vitest`, `eslint`, `tsc` + `vite build` | 27 passed, clean, builds |
 | Rules-only run of the seed set | E001/E003/E004/E005/E006/E008 high, E010 medium, E002/E007/E009 none |
-| Local LLM (`qwen2.5:7b`) on the hard cases | see README, "Results with a real model" |
+| Groq `gpt-oss-120b`, full seed set via the worker | 157 s, 10/10 expected levels, 0 rules fallbacks |
+| Local LLM (`qwen2.5:7b`) on the hard cases | E001/E004 high, E009 low, E002 none |
 | Fresh clone → `docker compose up --build` | all services healthy, seed processed, uploads OK, SPA routes OK |
 | Headless browser at 1366px and 375px | no overflow, no console errors |
 
