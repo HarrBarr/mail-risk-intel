@@ -27,9 +27,10 @@ docker compose up --build
 
 > **Start from a copy of `.env.example`.** It has the right defaults for every mode below; choosing a
 > model is then one edit or one flag. `.env` is git-ignored: never commit it.
-> **Received a `.env` file with the submission?** Put it in the repo root (instead of the `cp`
-> above). It contains a Groq key for this review, so `docker compose up --build` runs on Groq
-> straight away.
+> **Reviewers: a ready `.env` is attached to my submission email.** Save it in the repo root
+> (instead of the `cp` above). It is the same template with a Groq key filled in for this review,
+> so `docker compose up --build` runs on Groq straight away, with no account needed. Please don't
+> commit or share it.
 
 Open **http://localhost:8080**. The 10 seed emails are loaded on first start and processed by the
 worker; the inbox updates live as each one finishes.
