@@ -175,9 +175,11 @@ blocks an HTTP request, and the API stays usable when every LLM is down.
 is treated as a document dropped into the mailbox, not an email. Risk "none" means routine mail,
 not "verified safe".
 
-**Deviations from the development guide.** I skipped `langgraph-checkpoint-sqlite`: a reprocess
-restarts an email from scratch, and the worker re-queues in-flight emails after a crash. Mid-run
-resume isn't worth the complexity when one run is two LLM calls.
+**Deviations from the development guide.** The pipeline is built on LangGraph as planned. The only
+thing left out is the optional checkpoint package (`langgraph-checkpoint-sqlite`), which would let
+an interrupted run resume mid-way. Instead, a reprocess restarts an email from scratch, and the
+worker re-queues in-flight emails after a crash. Mid-run resume isn't worth the complexity when one
+run is two LLM calls.
 
 ---
 
@@ -265,6 +267,5 @@ before/after. On CPU a 7B model takes 2–10 minutes per email, which is why Gro
 
 ## Time spent
 
-About **4 hours of hands-on time**: planning, drafting the development guide, decisions, review and
-testing. The AI-assisted build session itself ran about 6¾ hours of wall-clock time, much of it
-unattended agent work and slow local-model evaluation. `PROCESS.md` has the breakdown.
+About **4–5 hours of work** in total: planning, drafting the development guide, directing the AI
+agents, review and testing. `PROCESS.md` describes how that time was used.

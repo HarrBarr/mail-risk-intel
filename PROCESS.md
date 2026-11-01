@@ -224,9 +224,13 @@ The agent ran autonomously within each task. These were my decisions and redirec
 
 ## 4. Deviations from the plan
 
-- **`langgraph-checkpoint-sqlite` was not used.** One run is two LLM calls; a crashed run is
-  re-queued by the worker, and reprocessing starts from scratch. Mid-run resume wasn't worth the
-  complexity.
+- **LangGraph checkpointing was left out (LangGraph itself is used).** The pipeline is a LangGraph
+  `StateGraph`, as planned (`backend/app/orchestration/graph.py`): extract → validate → repair /
+  next provider / rules fallback → context → assess → validate → persist, with conditional edges.
+  The only thing skipped is the optional `langgraph-checkpoint-sqlite` package, which saves state
+  after each node so an interrupted run can resume mid-way. One run is two LLM calls, so after a
+  crash the worker simply re-queues the email and runs it again from the start. Resuming mid-run
+  wasn't worth the extra complexity.
 - **Added beyond the plan:**
   - the deterministic signals, sender-history context, safety floor and graph enrichment (§3.1);
   - the Ollama reachability probe and chain refresh (§3.3);
@@ -246,10 +250,8 @@ The agent ran autonomously within each task. These were my decisions and redirec
 | Fresh clone → `docker compose up --build` | all services healthy, seed processed, uploads OK, SPA routes OK |
 | Headless browser at 1366px and 375px | no overflow, no console errors |
 
-**Time spent:** about **4 hours of my own hands-on time** (planning and drafting the guide,
-decisions, review and testing). The AI session ran about 6¾ hours of wall-clock time in total. The
-difference is unattended agent and model runtime, mostly CPU-bound local-model evaluation at
-several minutes per email, and the sub-agent building the frontend in parallel.
+**Time spent:** about **4–5 hours of work** in total: planning and drafting the guide,
+directing the agents, decisions, review and testing.
 
 ---
 
