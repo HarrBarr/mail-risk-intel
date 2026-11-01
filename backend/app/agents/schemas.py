@@ -41,6 +41,8 @@ _EMAIL_RE = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
 _ROUTING_PART = re.compile(r"routing(?:\s+(?:number|no\.?|#))?\s*:?\s*\d{9}", re.IGNORECASE)
 _ACCOUNT_PART = re.compile(r"account(?:\s+(?:ending(?:\s+in)?|no\.?|number|#))?\s*:?\s*\d{3,}", re.IGNORECASE)
 
+_PLACEHOLDER_TAGS = {"none", "n-a", "null", "no-risk", "routine"}  # models echo the level as a tag
+
 _RISK_SYNONYMS = {"critical": "high", "severe": "high", "moderate": "medium", "minimal": "low"}
 
 
@@ -120,7 +122,7 @@ class RiskAssessment(BaseModel):
         seen: list[str] = []
         for tag in tags:
             slug = _slug(str(tag)).replace("_", "-")
-            if slug and slug not in seen:
+            if slug and slug not in seen and slug not in _PLACEHOLDER_TAGS:
                 seen.append(slug)
         return seen
 

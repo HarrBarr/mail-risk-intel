@@ -35,7 +35,11 @@ def test_parse_json_object_rejects_garbage(text: str) -> None:
 def test_risk_schema_normalises_synonyms_and_tags() -> None:
     result = RiskGraphResult.model_validate(
         {
-            "risk": {"level": "Critical", "rationale": "x", "tags": ["Financial Anomaly", "urgency", "URGENCY"]},
+            "risk": {
+                "level": "Critical",
+                "rationale": "x",
+                "tags": ["Financial Anomaly", "urgency", "URGENCY", "None"],
+            },
             "entities": [{"name": "Acme", "type": "Company"}, {"name": "$5", "type": "money"}],
             "relationships": [],
         }
