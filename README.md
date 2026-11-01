@@ -21,19 +21,25 @@ Requires Docker (Compose v2.24+).
 ```bash
 git clone https://github.com/HarrBarr/mail-risk-intel.git
 cd mail-risk-intel
-cp .env.example .env          # paste a free GROQ_API_KEY from https://console.groq.com/keys
+cp .env.example .env          # ← do this first: all model settings live in your copy
 docker compose up --build
 ```
+
+> **Start from a copy of `.env.example`.** It has the right defaults for every mode below; choosing a
+> model is then one edit or one flag. `.env` is git-ignored: never commit it.
+> **Received a `.env` file with the submission?** Put it in the repo root (instead of the `cp`
+> above). It contains a Groq key for this review, so `docker compose up --build` runs on Groq
+> straight away.
 
 Open **http://localhost:8080**. The 10 seed emails are loaded on first start and processed by the
 worker; the inbox updates live as each one finishes.
 
-| You have | Run | What happens |
-|---|---|---|
-| A Groq key (free) | `docker compose up --build` | Groq `openai/gpt-oss-120b` for both agents; the seed set takes ~2.5 min on the free tier |
-| No key, want a real model | `docker compose --profile local up --build` | Starts Ollama, pulls `OLLAMA_MODEL` (≈5 GB, once); results switch from rules to the LLM as soon as the model is ready |
-| Ollama already on your machine | set `OLLAMA_BASE_URL=http://host.docker.internal:11434` and `OLLAMA_MODEL` in `.env` | Uses your local model |
-| Nothing | `docker compose up --build` | Rules engine only; the UI shows a banner and tags results `fallback` |
+| You have | In your `.env` | Run | What happens |
+|---|---|---|---|
+| A Groq key (free, ~1 min, no card: https://console.groq.com/keys) | `GROQ_API_KEY=<key>` | `docker compose up --build` | Groq `openai/gpt-oss-120b` for both agents; the seed set takes ~2.5 min on the free tier |
+| No key, want a real model | nothing to change | `docker compose --profile local up --build` | `--profile local` is what starts the Ollama container (plain `up` does not). It pulls `OLLAMA_MODEL` (`llama3.1:8b`, ≈5 GB, once). Emails are scored by rules until the download finishes, then by the model; use **Retry** or `make reprocess` to upgrade earlier ones. On CPU, expect minutes per email |
+| Ollama already installed on your machine | `OLLAMA_BASE_URL=http://host.docker.internal:11434`, `OLLAMA_MODEL=<a model you have pulled>` | `docker compose up --build` | Uses your local model |
+| Nothing | nothing | `docker compose up --build` | Rules engine only; the UI shows a banner and tags results `fallback` |
 
 API docs (OpenAPI) are at http://localhost:8000/docs.
 
