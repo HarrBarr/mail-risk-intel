@@ -16,65 +16,59 @@ interface EntityMeta {
   label: string;
   plural: string;
   icon: IconName;
-  /** Tailwind classes for the icon tile / chip. */
-  tile: string;
-  /** Hex fill for graph nodes. */
+  /** Hex fill for graph nodes; also the icon tint in the DOM. */
   hex: string;
 }
 
 /*
- * Entity colors deliberately avoid the risk hues (emerald/sky/amber/red), so in the
- * graph a node's fill (what it is) never gets confused with its ring (how risky).
+ * Entity fills come from the brand palette (violet / cyan / mint / warm amber …). Pink is
+ * avoided for fills because it reads as the 'high' ring, which most nodes carry. Some share a
+ * hue family with a risk ring, so the graph always draws a dark gap between the fill
+ * (what it is) and the ring (how risky): the ring reads as a separate outline. Each hex
+ * is >= 3:1 against --c-bg, so icons drawn in it pass non-text contrast.
  */
 export const ENTITY_META: Record<EntityType, EntityMeta> = {
   person: {
     label: "Person",
     plural: "People",
     icon: "user",
-    tile: "bg-violet-100 text-violet-800",
-    hex: "#7c3aed",
+    hex: "#6A5CFF",
   },
   organization: {
     label: "Organization",
     plural: "Organizations",
     icon: "building",
-    tile: "bg-indigo-100 text-indigo-800",
-    hex: "#4f46e5",
+    hex: "#2FD5FF",
   },
   amount: {
     label: "Amount",
     plural: "Amounts",
     icon: "currency",
-    tile: "bg-teal-100 text-teal-800",
-    hex: "#0f766e",
+    hex: "#7CF2C8",
   },
   account: {
     label: "Account",
     plural: "Accounts",
     icon: "card",
-    tile: "bg-fuchsia-100 text-fuchsia-800",
-    hex: "#c026d3",
+    hex: "#FFC48A",
   },
   location: {
     label: "Location",
     plural: "Locations",
     icon: "pin",
-    tile: "bg-cyan-100 text-cyan-800",
-    hex: "#0e7490",
+    hex: "#C7B8FF",
   },
   document: {
     label: "Document",
     plural: "Documents",
     icon: "file",
-    tile: "bg-stone-200 text-stone-800",
-    hex: "#78716c",
+    hex: "#B3BAD6",
   },
   other: {
     label: "Other",
     plural: "Other",
     icon: "tag",
-    tile: "bg-slate-200 text-slate-700",
-    hex: "#64748b",
+    hex: "#7A83A6",
   },
 };
 

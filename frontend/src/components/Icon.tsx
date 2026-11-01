@@ -35,12 +35,14 @@ export type IconName = keyof typeof PATHS;
 
 interface IconProps {
   name: IconName;
+  /** Pixel size (square). */
+  size?: number;
   className?: string;
   /** Pass a label only for standalone meaningful icons; decorative icons stay hidden from AT. */
   label?: string;
 }
 
-export function Icon({ name, className = "h-4 w-4", label }: IconProps) {
+export function Icon({ name, size = 16, className, label }: IconProps) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -49,7 +51,10 @@ export function Icon({ name, className = "h-4 w-4", label }: IconProps) {
       strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className={`shrink-0 ${className}`}
+      width={size}
+      height={size}
+      className={className}
+      style={{ flexShrink: 0 }}
       role={label ? "img" : undefined}
       aria-label={label}
       aria-hidden={label ? undefined : true}

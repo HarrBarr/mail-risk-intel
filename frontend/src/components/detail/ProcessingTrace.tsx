@@ -1,27 +1,29 @@
+import type { CSSProperties } from "react";
+
 import type { Step } from "@/api/schemas";
 import { capitalize, formatLatency } from "@/lib/format";
 
 import { Card } from "../Card";
 import { Icon, type IconName } from "../Icon";
+import d from "./Detail.module.css";
+import styles from "./ProcessingTrace.module.css";
 
-const OUTCOME: Record<string, { label: string; className: string; icon: IconName }> = {
-  ok: { label: "OK", className: "bg-emerald-50 text-emerald-800 ring-emerald-600/30", icon: "check" },
-  repaired: { label: "Repaired", className: "bg-sky-50 text-sky-800 ring-sky-600/30", icon: "refresh" },
-  fallback: { label: "Fallback", className: "bg-amber-50 text-amber-900 ring-amber-600/40", icon: "shield" },
-  error: { label: "Error", className: "bg-red-50 text-red-800 ring-red-600/30", icon: "alert" },
+const OUTCOME: Record<string, { label: string; tone: string; icon: IconName }> = {
+  ok: { label: "OK", tone: "var(--c-ok)", icon: "check" },
+  repaired: { label: "Repaired", tone: "var(--c-info)", icon: "refresh" },
+  fallback: { label: "Fallback", tone: "var(--c-warn)", icon: "shield" },
+  error: { label: "Error", tone: "var(--c-alarm)", icon: "alert" },
 };
 
 function Outcome({ outcome }: { outcome: string }) {
   const meta = OUTCOME[outcome] ?? {
     label: capitalize(outcome),
-    className: "bg-slate-100 text-slate-700 ring-slate-300",
+    tone: "var(--c-muted)",
     icon: "info" as const,
   };
   return (
-    <span
-      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${meta.className}`}
-    >
-      <Icon name={meta.icon} className="h-3 w-3" />
+    <span className={styles.outcome} data-outcome={outcome} style={{ "--tone": meta.tone } as CSSProperties}>
+      <Icon name={meta.icon} size={12} />
       {meta.label}
     </span>
   );
@@ -31,18 +33,18 @@ export function ProcessingTrace({ steps }: { steps: Step[] }) {
   return (
     <Card title="Processing trace" aside={steps.length ? `run ${steps[0]!.run}` : undefined}>
       {steps.length === 0 ? (
-        <p className="text-sm text-slate-500">No pipeline steps recorded yet.</p>
+        <p className={d.muted}>No pipeline steps recorded yet.</p>
       ) : (
-        <ol className="space-y-2">
+        <ol className={styles.steps}>
           {steps.map((step, i) => (
-            <li key={`${step.step}-${i}`} className="rounded-md border border-slate-200 px-3 py-2">
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                <span className="text-sm font-medium text-slate-900">{capitalize(step.step)}</span>
+            <li key={`${step.step}-${i}`} className={styles.step}>
+              <div className={styles.stepRow}>
+                <span className={styles.stepName}>{capitalize(step.step)}</span>
                 <Outcome outcome={step.outcome} />
-                <span className="ml-auto flex flex-wrap gap-x-3 text-xs text-slate-500">
+                <span className={styles.stats}>
                   <span>
                     {step.provider}
-                    {step.model ? <span className="font-mono"> / {step.model}</span> : null}
+                    {step.model ? ` / ${step.model}` : null}
                   </span>
                   <span>
                     {step.attempts} {step.attempts === 1 ? "attempt" : "attempts"}
@@ -51,13 +53,12 @@ export function ProcessingTrace({ steps }: { steps: Step[] }) {
                 </span>
               </div>
               {step.error ? (
-                <details className="mt-1.5">
-                  <summary className="cursor-pointer text-xs font-medium text-red-700 hover:underline">
+                <details className={`${d.disclosure} ${styles.error}`}>
+                  <summary>
+                    <Icon name="chevronRight" size={14} />
                     Error details
                   </summary>
-                  <pre className="mt-1 max-h-48 overflow-auto whitespace-pre-wrap break-words rounded bg-red-50 p-2 font-mono text-xs text-red-900">
-                    {step.error}
-                  </pre>
+                  <pre className={d.pre}>{step.error}</pre>
                 </details>
               ) : null}
             </li>

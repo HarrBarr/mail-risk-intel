@@ -14,6 +14,8 @@ import { Spinner } from "@/components/Spinner";
 import { pluralize } from "@/lib/format";
 import { useElementSize } from "@/lib/useElementSize";
 
+import styles from "./GraphPage.module.css";
+
 export default function GraphPage() {
   const [params, setParams] = useSearchParams();
   const parsed = levelSchema.safeParse(params.get("min_risk"));
@@ -60,30 +62,31 @@ export default function GraphPage() {
   const empty = graph && graph.nodes.length === 0;
 
   return (
-    <div className="mx-auto flex h-full max-w-screen-2xl">
-      <section aria-labelledby="graph-heading" className="flex min-w-0 flex-1 flex-col">
-        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-slate-200 bg-white px-4 py-3">
-          <div className="min-w-0">
-            <h1 id="graph-heading" className="text-lg font-semibold text-slate-900">
-              Knowledge graph
+    <div className={styles.page}>
+      <section aria-labelledby="graph-heading" className={styles.main}>
+        <div className={styles.toolbar}>
+          <div className={styles.titles}>
+            <h1 id="graph-heading" className={styles.heading}>
+              Knowledge <span className="gradient-text">graph</span>
             </h1>
-            <p className="text-xs text-slate-500" aria-live="polite">
+            <p className={styles.summary} aria-live="polite">
               {graph
                 ? `${pluralize(graph.nodes.length, "entity", "entities")} · ${pluralize(graph.edges.length, "relationship")} across all processed emails`
                 : "Entities and relationships across all processed emails"}
-              {query.isFetching && graph ? <Spinner className="ml-1.5 inline h-3 w-3" /> : null}
+              {query.isFetching && graph ? (
+                <span className={styles.fetching}>
+                  <Spinner size={12} />
+                </span>
+              ) : null}
             </p>
           </div>
           <MinRiskFilter value={minRisk} onChange={setMinRisk} />
         </div>
 
-        <div className="relative min-h-0 flex-1 bg-slate-50" ref={canvasRef}>
+        <div className={styles.stage} ref={canvasRef}>
           {query.isPending ? (
-            <div
-              role="status"
-              className="flex h-full items-center justify-center gap-2 text-sm text-slate-500"
-            >
-              <Spinner className="h-5 w-5" /> Building graph…
+            <div role="status" className={styles.loading}>
+              <Spinner size={20} /> Building graph…
             </div>
           ) : query.isError && !graph ? (
             <ErrorState
@@ -100,7 +103,7 @@ export default function GraphPage() {
             </EmptyState>
           ) : graph && size.width > 0 && size.height > 0 ? (
             <>
-              <div className="absolute inset-0" aria-hidden="true">
+              <div className={styles.canvas} aria-hidden="true">
                 <GraphCanvas
                   graph={graph}
                   width={size.width}
@@ -110,12 +113,10 @@ export default function GraphPage() {
                   onSelect={setSelectedId}
                 />
               </div>
-              <div className="pointer-events-none absolute left-3 top-3 max-w-[16rem] [&>*]:pointer-events-auto">
+              <div className={styles.legend}>
                 <GraphLegend types={types} />
               </div>
-              <p className="pointer-events-none absolute bottom-3 right-3 hidden rounded bg-white/80 px-2 py-1 text-xs text-slate-500 sm:block">
-                Scroll to zoom · drag to pan · click a node
-              </p>
+              <p className={styles.hint}>Scroll to zoom · drag to pan · click a node</p>
             </>
           ) : null}
         </div>
@@ -124,15 +125,12 @@ export default function GraphPage() {
       {graph && !empty ? (
         <aside
           aria-label={selected ? `Details for ${selected.name}` : "Entity list"}
-          className={`${
-            selected
-              ? "fixed inset-x-0 bottom-0 z-30 max-h-[65dvh] animate-slide-up rounded-t-2xl border-t border-slate-200 shadow-2xl"
-              : "hidden"
-          } overflow-y-auto bg-white md:static md:block md:max-h-none md:w-80 md:shrink-0 md:animate-none md:rounded-none md:border-l md:border-t-0 md:shadow-none lg:w-96`}
+          className={styles.panel}
+          data-open={selected ? "true" : "false"}
         >
           {selected ? (
             <>
-              <div className="mx-auto mt-2 h-1 w-10 rounded-full bg-slate-300 md:hidden" aria-hidden="true" />
+              <div className={styles.grabber} aria-hidden="true" />
               <NodePanel graph={graph} node={selected} onSelect={focusNode} onClose={close} />
             </>
           ) : (

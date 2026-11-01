@@ -1,6 +1,9 @@
 import type { ReactNode } from "react";
 
+import { cx } from "@/lib/cx";
+
 import { Icon, type IconName } from "./Icon";
+import styles from "./StateBlock.module.css";
 
 interface EmptyStateProps {
   icon?: IconName;
@@ -12,13 +15,13 @@ interface EmptyStateProps {
 
 export function EmptyState({ icon = "inbox", title, children, action, compact = false }: EmptyStateProps) {
   return (
-    <div className={`flex flex-col items-center text-center ${compact ? "px-4 py-6" : "px-6 py-14"}`}>
-      <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-500">
-        <Icon name={icon} className="h-5 w-5" />
+    <div className={cx(styles.block, compact && styles.compact)}>
+      <div className={styles.icon}>
+        <Icon name={icon} size={20} />
       </div>
-      <p className="text-sm font-semibold text-slate-900">{title}</p>
-      {children ? <div className="mt-1 max-w-sm text-sm text-slate-600">{children}</div> : null}
-      {action ? <div className="mt-4">{action}</div> : null}
+      <p className={styles.title}>{title}</p>
+      {children ? <div className={styles.text}>{children}</div> : null}
+      {action ? <div className={styles.action}>{action}</div> : null}
     </div>
   );
 }

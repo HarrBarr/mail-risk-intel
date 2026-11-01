@@ -1,0 +1,20 @@
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-1) var(--sp-3);
+  padding: var(--sp-4) var(--sp-5) var(--sp-3);
+  border-bottom: 1px solid var(--c-line);
+}
+.title {
+  font-size: var(--fs-lg);
+  color: var(--c-text);
+}
+.aside {
+  font-size: var(--fs-xs);
+  color: var(--c-faint);
+}
+.body {
+  padding: var(--sp-4) var(--sp-5) var(--sp-5);
+}

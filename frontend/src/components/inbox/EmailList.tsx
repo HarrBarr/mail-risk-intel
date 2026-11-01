@@ -6,6 +6,7 @@ import type { InboxFilters } from "@/lib/useInboxFilters";
 import { EmptyState } from "../EmptyState";
 import { ErrorState } from "../ErrorState";
 import { Skeleton } from "../Skeleton";
+import styles from "./EmailList.module.css";
 import { EmailListItem } from "./EmailListItem";
 
 interface Props {
@@ -18,15 +19,15 @@ interface Props {
 
 function ListSkeleton() {
   return (
-    <ul aria-hidden="true" className="divide-y divide-slate-100">
+    <ul aria-hidden="true" className={styles.list}>
       {Array.from({ length: 6 }, (_, i) => (
-        <li key={i} className="space-y-2 px-4 py-3">
-          <div className="flex justify-between gap-4">
-            <Skeleton className="h-4 w-2/5" />
-            <Skeleton className="h-3 w-10" />
+        <li key={i} className={styles.skeletonRow}>
+          <div className={styles.skeletonTop}>
+            <Skeleton width="40%" height={14} />
+            <Skeleton width={40} height={10} />
           </div>
-          <Skeleton className="h-4 w-4/5" />
-          <Skeleton className="h-5 w-20 rounded-full" />
+          <Skeleton width="80%" height={14} />
+          <Skeleton width={84} height={20} pill />
         </li>
       ))}
     </ul>
@@ -62,7 +63,7 @@ export function EmailList({ query, filters, selectedId, search, onClearFilters }
         icon="filter"
         title="No emails match"
         action={
-          <button type="button" className="btn-secondary" onClick={onClearFilters}>
+          <button type="button" className="btn btn-secondary" onClick={onClearFilters}>
             Clear filters
           </button>
         }
@@ -71,8 +72,8 @@ export function EmailList({ query, filters, selectedId, search, onClearFilters }
       </EmptyState>
     ) : (
       <EmptyState icon="inbox" title="Your inbox is empty">
-        Use <span className="font-medium text-slate-900">Add email</span> to paste text or upload a .txt, .pdf
-        or .eml file.
+        Use <strong className={styles.em}>Add email</strong> to paste text or upload a .txt, .pdf or .eml
+        file.
       </EmptyState>
     );
   }
@@ -80,17 +81,17 @@ export function EmailList({ query, filters, selectedId, search, onClearFilters }
   return (
     <>
       {isError ? (
-        <p role="alert" className="border-b border-red-100 bg-red-50 px-4 py-2 text-xs text-red-800">
+        <p role="alert" className={styles.stale}>
           Couldn't refresh — showing the last loaded list.
         </p>
       ) : null}
-      <ul className="divide-y divide-slate-100" aria-busy={isFetching || undefined}>
+      <ul className={styles.list} aria-busy={isFetching || undefined}>
         {data.items.map((email) => (
           <EmailListItem key={email.id} email={email} selected={email.id === selectedId} search={search} />
         ))}
       </ul>
       {data.total > data.items.length ? (
-        <p className="px-4 py-3 text-center text-xs text-slate-500">
+        <p className={styles.more}>
           Showing {data.items.length} of {data.total}. Narrow the search to see more.
         </p>
       ) : null}

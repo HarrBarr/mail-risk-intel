@@ -4,9 +4,11 @@ import { useCreateEmail } from "@/api/hooks";
 import type { Accepted } from "@/api/schemas";
 import { errorMessage } from "@/lib/errors";
 import { formatBytes } from "@/lib/format";
+import { cx } from "@/lib/cx";
 import { ACCEPT_ATTR, validateUpload } from "@/lib/upload";
 
 import { Icon } from "../Icon";
+import styles from "./AddEmail.module.css";
 import { FieldError, FormFooter } from "./FormFooter";
 
 interface Props {
@@ -51,7 +53,7 @@ export function UploadFileForm({ onCreated, onCancel }: Props) {
 
   return (
     <form onSubmit={onSubmit} noValidate>
-      <div className="px-5 py-4">
+      <div className={styles.body}>
         <label
           htmlFor={inputId}
           onDragOver={(e) => {
@@ -60,19 +62,13 @@ export function UploadFileForm({ onCreated, onCancel }: Props) {
           }}
           onDragLeave={() => setDragging(false)}
           onDrop={onDrop}
-          className={`flex cursor-pointer flex-col items-center rounded-lg border-2 border-dashed px-4 py-8 text-center transition-colors focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 ${
-            dragging
-              ? "border-indigo-500 bg-indigo-50"
-              : error
-                ? "border-red-300 bg-red-50/40"
-                : "border-slate-300 hover:border-slate-400 hover:bg-slate-50"
-          }`}
+          className={cx(styles.drop, dragging && styles.dragging, !dragging && error && styles.dropInvalid)}
         >
-          <Icon name="upload" className="h-6 w-6 text-slate-500" />
-          <span className="mt-2 text-sm font-medium text-slate-900">
-            Drop a file here or <span className="text-indigo-700 underline underline-offset-2">browse</span>
+          <Icon name="upload" size={24} />
+          <span className={styles.dropTitle}>
+            Drop a file here or <span className={styles.browse}>browse</span>
           </span>
-          <span id={hintId} className="mt-1 text-xs text-slate-600">
+          <span id={hintId} className={styles.dropHint}>
             .txt, .pdf or .eml, up to 5 MB
           </span>
           <input
@@ -89,11 +85,11 @@ export function UploadFileForm({ onCreated, onCancel }: Props) {
         </label>
 
         {file ? (
-          <div className="mt-3 flex items-center gap-3 rounded-md border border-slate-200 px-3 py-2">
-            <Icon name="file" className="h-5 w-5 text-slate-500" />
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-slate-900">{file.name}</p>
-              <p className="text-xs text-slate-600">{formatBytes(file.size)}</p>
+          <div className={styles.file}>
+            <Icon name="file" size={20} />
+            <div className={styles.fileText}>
+              <p className={styles.fileName}>{file.name}</p>
+              <p className={styles.fileSize}>{formatBytes(file.size)}</p>
             </div>
             <button
               type="button"

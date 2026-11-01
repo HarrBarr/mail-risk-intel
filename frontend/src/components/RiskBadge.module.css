@@ -1,0 +1,69 @@
+/*
+ * Each level sets --tone; the badge derives tint, border and text from it.
+ * Contrast (text over its own tint, composited on bg/panel/glass): none 10.2+, low 8.2+,
+ * medium 9.3+, high 5.8+ : 1 (all >= 4.5:1).
+ */
+.badge {
+  --tone: var(--c-muted);
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  white-space: nowrap;
+  border-radius: var(--r-pill);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tone) 35%, transparent);
+}
+.sm {
+  gap: 6px;
+  padding: 2px 9px;
+  font-size: var(--fs-xs);
+}
+.md {
+  gap: 8px;
+  padding: 4px 12px;
+  font-size: var(--fs-sm);
+}
+
+.none {
+  --tone: var(--risk-none);
+}
+.low {
+  --tone: var(--risk-low);
+}
+.medium {
+  --tone: var(--risk-medium);
+}
+.high {
+  --tone: var(--risk-high);
+  box-shadow: 0 0 16px rgb(255 107 138 / 0.18);
+}
+
+.neutral,
+.failed {
+  color: var(--c-muted);
+  background: var(--c-fill-1);
+  border-color: var(--c-border);
+}
+.failed {
+  color: var(--c-text);
+  border-style: dashed;
+  border-color: rgb(var(--rgb-text) / 0.3);
+}
+
+.meter {
+  display: flex;
+  align-items: flex-end;
+  gap: 1px;
+}
+.bar {
+  width: 3px;
+  border-radius: 1px;
+  background: currentColor;
+  opacity: 0.22;
+}
+.barOn {
+  opacity: 1;
+}

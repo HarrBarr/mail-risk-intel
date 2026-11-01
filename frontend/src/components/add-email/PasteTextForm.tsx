@@ -5,6 +5,7 @@ import type { Accepted } from "@/api/schemas";
 import { errorMessage } from "@/lib/errors";
 import { validateText } from "@/lib/upload";
 
+import styles from "./AddEmail.module.css";
 import { FieldError, FormFooter } from "./FormFooter";
 
 const PLACEHOLDER = `From: alice@example.com
@@ -39,15 +40,13 @@ export function PasteTextForm({ onCreated, onCancel }: Props) {
 
   return (
     <form onSubmit={onSubmit} noValidate>
-      <div className="px-5 py-4">
-        <label htmlFor={fieldId} className="block text-sm font-medium text-slate-900">
+      <div className={styles.body}>
+        <label htmlFor={fieldId} className={styles.label}>
           Email text
         </label>
-        <p id={hintId} className="mt-0.5 text-sm text-slate-600">
-          Header lines (<code className="font-mono text-xs">From:</code>,{" "}
-          <code className="font-mono text-xs">To:</code>, <code className="font-mono text-xs">Subject:</code>,{" "}
-          <code className="font-mono text-xs">Date:</code>) are optional. Without them, the whole text is
-          treated as the body.
+        <p id={hintId} className={styles.hint}>
+          Header lines (<code>From:</code>, <code>To:</code>, <code>Subject:</code>, <code>Date:</code>) are
+          optional. Without them, the whole text is treated as the body.
         </p>
         <textarea
           id={fieldId}
@@ -62,7 +61,7 @@ export function PasteTextForm({ onCreated, onCancel }: Props) {
           placeholder={PLACEHOLDER}
           aria-invalid={error ? true : undefined}
           aria-describedby={`${hintId}${error ? ` ${errorId}` : ""}`}
-          className="input mt-2 min-h-[12rem] resize-y font-mono text-xs leading-relaxed"
+          className={`input ${styles.textarea}`}
           spellCheck={false}
         />
         <FieldError id={errorId} message={error} />

@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
+import styles from "./Dialog.module.css";
 import { Icon } from "./Icon";
 
 interface DialogProps {
@@ -70,12 +71,8 @@ export function Dialog({ open, onClose, title, description, children }: DialogPr
   if (!open) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-stretch justify-center sm:items-center sm:p-6">
-      <div
-        className="absolute inset-0 animate-fade-in bg-slate-900/50"
-        aria-hidden="true"
-        onClick={onClose}
-      />
+    <div className={styles.root}>
+      <div className={styles.backdrop} aria-hidden="true" onClick={onClose} />
       <div
         ref={panelRef}
         role="dialog"
@@ -83,24 +80,24 @@ export function Dialog({ open, onClose, title, description, children }: DialogPr
         aria-labelledby={titleId}
         aria-describedby={description ? descId : undefined}
         tabIndex={-1}
-        className="relative flex max-h-full w-full animate-slide-up flex-col bg-white shadow-xl outline-none sm:max-w-xl sm:rounded-xl"
+        className={styles.panel}
       >
-        <div className="flex items-start justify-between gap-4 border-b border-slate-200 px-5 py-4">
+        <div className={styles.header}>
           <div>
-            <h2 id={titleId} className="text-base font-semibold text-slate-900">
+            <h2 id={titleId} className={styles.title}>
               {title}
             </h2>
             {description ? (
-              <p id={descId} className="mt-0.5 text-sm text-slate-600">
+              <p id={descId} className={styles.description}>
                 {description}
               </p>
             ) : null}
           </div>
-          <button type="button" className="icon-btn -mr-2 -mt-1" onClick={onClose} aria-label="Close dialog">
-            <Icon name="x" className="h-5 w-5" />
+          <button type="button" className="icon-btn" onClick={onClose} aria-label="Close dialog">
+            <Icon name="x" size={20} />
           </button>
         </div>
-        <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
+        <div className={styles.content}>{children}</div>
       </div>
     </div>,
     document.body,

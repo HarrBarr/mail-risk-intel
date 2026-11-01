@@ -162,6 +162,27 @@ the way the agent had flagged as the top risk: **Groq had retired `llama-3.3-70b
 It also documented the "Groq retires models" risk in the README, because a silent fall to rules is
 the failure mode a reviewer would most likely hit.
 
+### 3.6 Restyle to a brand (human request)
+
+The human asked for a "glow up": remove Tailwind and apply a brand-directions file, a 3.8 MB bundled
+HTML page holding seven landing-page variants. The main agent unpacked the bundle (nested base64 +
+gzip manifests), rendered the variants headlessly, and pulled the actual design system out of the page
+script: the default "Northern lights" palette (13 tokens), how surfaces are built (gradient glass,
+20px blur, hairline borders at text 12–16% opacity, inset highlight, deep shadow), radii, the type
+stack and tracking. It then sent that spec, with reference screenshots, to the **same frontend
+sub-agent**, so the agent that already knew the component tree did the 45-file migration to CSS
+Modules + a token file. The brief required:
+
+- zero Tailwind left (verified by grep);
+- self-hosted fonts;
+- risk colours re-tuned for a dark background, with **computed contrast ratios** reported (lowest:
+  high-risk badge at 5.77:1);
+- tests rewritten to assert something meaningful, not deleted.
+
+The sub-agent caught one problem of its own from screenshots: it had made the "account" entity colour
+the brand pink, which blended into the high-risk ring that most nodes carry, so it changed it. The main
+agent re-ran lint, tests and build, and reviewed the screenshots, before rebuilding the Docker stack.
+
 ✍️ *Any points where you, the human, stepped in: re-scoped, rejected an approach, asked for
 something different. The session above contains the decisions you made up front (track, repo, plan,
 identity, visibility); add anything you changed after reviewing the result.*
@@ -200,7 +221,7 @@ identity, visibility); add anything you changed after reviewing the result.*
 > and do not run git.** Read `backend/app/api/schemas.py` (the exact API contract; mirror it as zod
 > and validate every response), `backend/app/api/routes.py`, the development guide, and the brief's UI
 > section. Stack: Vite, React 18, strict TS, TanStack Query, react-router, zod, react-force-graph-2d,
-> Tailwind, vitest + Testing Library; npm.
+> Tailwind (later replaced, §3.6), vitest + Testing Library; npm.
 >
 > Build: app shell with a rules-mode banner; inbox with risk badges, a fallback chip, risk filter and
 > search, master–detail on desktop and full-screen detail on mobile, polling while anything is in

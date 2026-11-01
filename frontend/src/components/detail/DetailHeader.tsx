@@ -7,6 +7,7 @@ import { STATUS_LABEL } from "@/lib/risk";
 
 import { Icon } from "../Icon";
 import { RiskBadge } from "../RiskBadge";
+import styles from "./DetailHeader.module.css";
 
 interface Props {
   email: EmailDetail;
@@ -18,36 +19,30 @@ export const DetailHeader = forwardRef<HTMLHeadingElement, Props>(function Detai
   ref,
 ) {
   return (
-    <header className="space-y-3">
-      <Link to={backTo} className="btn-ghost -ml-2 px-2 md:hidden">
+    <header className={styles.header}>
+      <Link to={backTo} className={`btn btn-ghost ${styles.back}`}>
         <Icon name="chevronLeft" />
         Back to inbox
       </Link>
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <h2
-          ref={ref}
-          tabIndex={-1}
-          className="min-w-0 break-words text-xl font-semibold leading-snug text-slate-900 outline-none"
-        >
+      <div className={styles.titleRow}>
+        <h2 ref={ref} tabIndex={-1} className={styles.title}>
           {email.subject || "(no subject)"}
         </h2>
-        <RiskBadge level={email.risk?.level ?? null} status={email.status} size="md" className="self-start" />
+        <RiskBadge level={email.risk?.level ?? null} status={email.status} size="md" />
       </div>
-      <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1 text-sm">
-        <dt className="text-slate-500">From</dt>
-        <dd className="break-words font-medium text-slate-900">{email.sender || "Unknown sender"}</dd>
-        <dt className="text-slate-500">To</dt>
-        <dd className="break-words text-slate-800">
-          {email.recipients.length ? email.recipients.join(", ") : "—"}
-        </dd>
-        <dt className="text-slate-500">Date</dt>
-        <dd className="text-slate-800">
+      <dl className={styles.meta}>
+        <dt>From</dt>
+        <dd className={styles.sender}>{email.sender || "Unknown sender"}</dd>
+        <dt>To</dt>
+        <dd>{email.recipients.length ? email.recipients.join(", ") : "—"}</dd>
+        <dt>Date</dt>
+        <dd>
           <time dateTime={email.date ?? undefined}>{formatLongDate(email.date)}</time>
         </dd>
-        <dt className="text-slate-500">Status</dt>
-        <dd className="text-slate-800">
+        <dt>Status</dt>
+        <dd>
           {STATUS_LABEL[email.status]}
-          <span className="text-slate-500"> · {email.source}</span>
+          <span className={styles.source}> · {email.source}</span>
         </dd>
       </dl>
     </header>

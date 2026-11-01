@@ -1,0 +1,78 @@
+.page {
+  display: flex;
+  height: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 100%;
+  min-width: 0;
+  background: linear-gradient(180deg, rgb(var(--rgb-panel) / 0.55), rgb(var(--rgb-bg2) / 0.4));
+}
+.listHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: var(--sp-5) var(--sp-4) var(--sp-1);
+}
+.heading {
+  font-size: var(--fs-3xl);
+  letter-spacing: var(--track-display-lg);
+}
+.total {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--c-faint);
+}
+.listScroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.detail {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  display: none;
+}
+.detailInner {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: var(--sp-4);
+}
+
+/* Mobile: the route decides which pane shows. */
+.page[data-has-selection="true"] .list {
+  display: none;
+}
+.page[data-has-selection="true"] .detail {
+  display: block;
+}
+
+@media (min-width: 640px) {
+  .detailInner {
+    padding: var(--sp-6);
+  }
+}
+@media (min-width: 768px) {
+  .list,
+  .page[data-has-selection="true"] .list {
+    display: flex;
+    width: var(--list-w);
+    border-right: 1px solid var(--c-line);
+  }
+  .detail {
+    display: block;
+  }
+}
+@media (min-width: 1024px) {
+  .list,
+  .page[data-has-selection="true"] .list {
+    width: var(--list-w-lg);
+  }
+}

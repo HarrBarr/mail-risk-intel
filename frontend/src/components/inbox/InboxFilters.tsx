@@ -5,6 +5,7 @@ import { RISK_META } from "@/lib/risk";
 import type { InboxFilters as Filters } from "@/lib/useInboxFilters";
 
 import { Icon } from "../Icon";
+import styles from "./InboxFilters.module.css";
 
 const OPTIONS: Array<{ value: Level | undefined; label: string }> = [
   { value: undefined, label: "All" },
@@ -34,15 +35,12 @@ export function InboxFilters({ filters, onChange }: Props) {
   }, [q, filters.q, onChange]);
 
   return (
-    <div className="space-y-3 border-b border-slate-200 px-4 py-3">
-      <div className="relative">
+    <div className={styles.filters}>
+      <div className={styles.search}>
         <label htmlFor={searchId} className="sr-only">
           Search emails
         </label>
-        <Icon
-          name="search"
-          className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
-        />
+        <Icon name="search" className={styles.searchIcon} />
         <input
           id={searchId}
           type="search"
@@ -55,11 +53,11 @@ export function InboxFilters({ filters, onChange }: Props) {
             }
           }}
           placeholder="Search sender, subject, content…"
-          className="input pl-9"
+          className={`input ${styles.searchInput}`}
           maxLength={200}
         />
       </div>
-      <div role="group" aria-label="Filter by risk level" className="flex flex-wrap gap-1.5">
+      <div role="group" aria-label="Filter by risk level" className={styles.levels}>
         {OPTIONS.map((opt) => {
           const active = filters.risk === opt.value;
           return (
@@ -68,14 +66,10 @@ export function InboxFilters({ filters, onChange }: Props) {
               type="button"
               aria-pressed={active}
               onClick={() => onChange({ risk: opt.value })}
-              className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${
-                active
-                  ? "border-slate-900 bg-slate-900 text-white"
-                  : "border-slate-300 bg-white text-slate-700 hover:border-slate-400"
-              }`}
+              className={styles.level}
             >
               {opt.value ? (
-                <span aria-hidden="true" className={`h-2 w-2 rounded-full ${RISK_META[opt.value].dot}`} />
+                <span aria-hidden="true" className="dot" style={{ color: RISK_META[opt.value].cssVar }} />
               ) : null}
               {opt.label}
             </button>

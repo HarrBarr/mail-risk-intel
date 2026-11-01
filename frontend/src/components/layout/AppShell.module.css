@@ -1,0 +1,146 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+}
+
+.skip {
+  position: absolute;
+  left: var(--sp-2);
+  top: var(--sp-2);
+  z-index: var(--z-dialog);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-pill);
+  background: var(--c-text);
+  color: var(--c-bg);
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+.skip:focus-visible {
+  transform: none;
+}
+
+.header {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--c-line);
+  background: rgb(var(--rgb-bg) / 0.6);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+.headerInner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  max-width: 1600px;
+  height: var(--header-h);
+  margin: 0 auto;
+  padding: 0 var(--sp-4);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: var(--sp-1);
+  border-radius: var(--r-pill);
+}
+.logo {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 200deg,
+    var(--c-aur1),
+    var(--c-aur2),
+    var(--c-aur3),
+    var(--c-accent),
+    var(--c-aur1)
+  );
+  box-shadow: 0 0 18px rgb(var(--rgb-aur1) / 0.5);
+}
+.brandName {
+  display: none;
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: 600;
+  letter-spacing: var(--track-display);
+  white-space: nowrap;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.navItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-md);
+  font-weight: 500;
+  color: var(--c-muted);
+  border: 1px solid transparent;
+  transition:
+    color var(--dur) var(--ease),
+    background-color var(--dur) var(--ease);
+}
+.navItem:hover {
+  color: var(--c-text);
+}
+.navItem[aria-current="page"] {
+  color: var(--c-text);
+  background: var(--c-fill-2);
+  border-color: var(--c-line);
+}
+.long {
+  display: none;
+}
+
+.add {
+  margin-left: auto;
+  padding-inline: 11px;
+}
+.addLabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.main {
+  flex: 1;
+  min-height: 0;
+}
+
+@media (min-width: 640px) {
+  .headerInner {
+    gap: var(--sp-4);
+  }
+  .short {
+    display: none;
+  }
+  .long {
+    display: inline;
+  }
+  .add {
+    padding-inline: 18px;
+  }
+  .addLabel {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+  }
+}
+@media (min-width: 768px) {
+  .brandName {
+    display: inline;
+  }
+}

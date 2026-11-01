@@ -1,0 +1,106 @@
+/*
+ * Design tokens: "Simple To Work · Northern lights".
+ * Everything visual derives from these; components never hard-code a color.
+ */
+:root {
+  color-scheme: dark;
+
+  /* ---- palette (exact brand values) */
+  --c-bg: #05060f;
+  --c-bg2: #0a0c1c;
+  --c-deep: #030409;
+  --c-panel: #0e1126;
+  --c-text: #f5f7ff;
+  --c-muted: #b3bad6;
+  --c-accent: #7cf2c8;
+  --c-aur1: #6a5cff;
+  --c-aur2: #ff5ca8;
+  --c-aur3: #2fd5ff;
+  --c-ok: #8bf0b0;
+  --c-warn: #ffc48a;
+  --c-info: #8fc8ff;
+  --c-alarm: #ff6b8a; /* "high" risk + errors; distinct from decorative aur2 */
+
+  /* RGB triplets for alpha mixes */
+  --rgb-text: 245 247 255;
+  --rgb-bg: 5 6 15;
+  --rgb-bg2: 10 12 28;
+  --rgb-panel: 14 17 38;
+  --rgb-deep: 3 4 9;
+  --rgb-aur1: 106 92 255;
+  --rgb-aur2: 255 92 168;
+  --rgb-aur3: 47 213 255;
+  --rgb-accent: 124 242 200;
+
+  /* ---- derived surfaces & lines */
+  --c-faint: rgb(var(--rgb-text) / 0.62); /* tertiary text: >= 4.5:1 on panel */
+  --c-line: rgb(var(--rgb-text) / 0.1); /* hairline dividers */
+  --c-border: rgb(var(--rgb-text) / 0.14); /* glass borders */
+  --c-border-strong: rgb(var(--rgb-text) / 0.25); /* outline buttons, inputs */
+  --c-fill-1: rgb(var(--rgb-text) / 0.04); /* chips, hover */
+  --c-fill-2: rgb(var(--rgb-text) / 0.08); /* pressed, skeleton */
+  --c-fill-3: rgb(var(--rgb-text) / 0.12);
+
+  --glass: linear-gradient(160deg, rgb(var(--rgb-panel) / 0.78), rgb(var(--rgb-bg2) / 0.72));
+  --glass-solid: linear-gradient(160deg, rgb(var(--rgb-panel) / 0.97), rgb(var(--rgb-bg2) / 0.97));
+  --glass-blur: blur(20px);
+  --shadow-inset: inset 0 1px 0 rgb(var(--rgb-text) / 0.18);
+  --shadow-elevated: inset 0 1px 0 rgb(var(--rgb-text) / 0.18), 0 30px 80px rgb(var(--rgb-deep) / 0.55);
+  --glow: 0 0 24px rgb(var(--rgb-aur1) / 0.6);
+  --aurora: linear-gradient(90deg, var(--c-aur1), var(--c-aur2), var(--c-aur3));
+
+  /* ---- risk levels: text color + translucent tint + border */
+  --risk-none: var(--c-ok);
+  --risk-low: var(--c-info);
+  --risk-medium: var(--c-warn);
+  --risk-high: var(--c-alarm);
+
+  /* ---- typography */
+  --font-display: "Sora Variable", "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --fs-2xs: 11px;
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-md: 14px; /* body */
+  --fs-lg: 15px;
+  --fs-xl: 18px;
+  --fs-2xl: 22px;
+  --fs-3xl: 26px;
+
+  --track-display: -0.03em;
+  --track-display-lg: -0.045em;
+  --track-eyebrow: 0.09em;
+
+  /* ---- spacing (4px grid) */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-14: 56px;
+
+  /* ---- shape */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-pill: 999px;
+
+  /* ---- layout */
+  --header-h: 60px;
+  --list-w: 340px;
+  --list-w-lg: 400px;
+  --panel-w: 340px;
+
+  /* ---- motion */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 160ms;
+
+  /* ---- z */
+  --z-sheet: 30;
+  --z-dialog: 50;
+}

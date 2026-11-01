@@ -3,6 +3,7 @@ import type { Status } from "@/api/schemas";
 import { Icon } from "../Icon";
 import { Skeleton } from "../Skeleton";
 import { Spinner } from "../Spinner";
+import styles from "./PipelineProgress.module.css";
 
 const STAGES: Array<{ status: Status; label: string }> = [
   { status: "pending", label: "Queued" },
@@ -10,47 +11,41 @@ const STAGES: Array<{ status: Status; label: string }> = [
   { status: "assessing", label: "Assessing risk" },
 ];
 
-/** Stepper + skeleton cards shown while the pipeline runs (the detail query polls meanwhile). */
+/** Stepper + skeleton lines shown while the pipeline runs (the detail query polls meanwhile). */
 export function PipelineProgress({ status }: { status: Status }) {
   const current = STAGES.findIndex((s) => s.status === status);
   return (
-    <section aria-labelledby="pipeline-progress" className="card px-4 py-4">
-      <h3 id="pipeline-progress" className="text-sm font-semibold text-slate-900">
+    <section aria-labelledby="pipeline-progress" className={`card ${styles.card}`}>
+      <div className={styles.progressLine} aria-hidden="true" />
+      <h3 id="pipeline-progress" className={styles.title}>
         Analysis in progress
       </h3>
-      <p className="mt-0.5 text-sm text-slate-600" role="status" aria-live="polite">
+      <p className={styles.status} role="status" aria-live="polite">
         {STAGES[current]?.label ?? "Working"}… this page updates automatically.
       </p>
-      <ol className="mt-3 flex flex-wrap gap-x-4 gap-y-2">
+      <ol className={styles.stages}>
         {STAGES.map((stage, i) => {
           const state = i < current ? "done" : i === current ? "active" : "todo";
           return (
             <li
               key={stage.status}
-              className={`flex items-center gap-1.5 text-xs font-medium ${
-                state === "todo"
-                  ? "text-slate-400"
-                  : state === "active"
-                    ? "text-indigo-700"
-                    : "text-slate-700"
-              }`}
+              className={styles.stage}
+              data-state={state}
               aria-current={state === "active" ? "step" : undefined}
             >
-              {state === "done" ? <Icon name="check" className="h-3.5 w-3.5" /> : null}
+              {state === "done" ? <Icon name="check" size={14} /> : null}
               {state === "active" ? <Spinner /> : null}
-              {state === "todo" ? (
-                <span className="h-2 w-2 rounded-full bg-slate-300" aria-hidden="true" />
-              ) : null}
+              {state === "todo" ? <span className={styles.todoDot} aria-hidden="true" /> : null}
               {stage.label}
             </li>
           );
         })}
       </ol>
-      <div className="mt-4 space-y-2" aria-hidden="true">
-        <Skeleton className="h-4 w-1/3" />
-        <Skeleton className="h-3 w-full" />
-        <Skeleton className="h-3 w-5/6" />
-        <Skeleton className="h-3 w-2/3" />
+      <div className={styles.skeleton} aria-hidden="true">
+        <Skeleton width="33%" height={14} />
+        <Skeleton height={10} />
+        <Skeleton width="83%" height={10} />
+        <Skeleton width="66%" height={10} />
       </div>
     </section>
   );

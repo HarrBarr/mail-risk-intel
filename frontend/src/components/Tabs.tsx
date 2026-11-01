@@ -1,5 +1,7 @@
 import { useRef, type KeyboardEvent, type ReactNode } from "react";
 
+import styles from "./Tabs.module.css";
+
 interface TabsProps<T extends string> {
   tabs: ReadonlyArray<{ id: T; label: string }>;
   value: T;
@@ -29,12 +31,7 @@ export function Tabs<T extends string>({ tabs, value, onChange, idPrefix, label,
 
   return (
     <div>
-      <div
-        role="tablist"
-        aria-label={label}
-        onKeyDown={onKeyDown}
-        className="flex gap-1 border-b border-slate-200 px-5"
-      >
+      <div role="tablist" aria-label={label} onKeyDown={onKeyDown} className={styles.list}>
         {tabs.map((tab, i) => {
           const selected = tab.id === value;
           return (
@@ -50,11 +47,7 @@ export function Tabs<T extends string>({ tabs, value, onChange, idPrefix, label,
               aria-controls={`${idPrefix}-panel`}
               tabIndex={selected ? 0 : -1}
               onClick={() => onChange(tab.id)}
-              className={`-mb-px border-b-2 px-3 py-2.5 text-sm font-medium transition-colors ${
-                selected
-                  ? "border-indigo-600 text-indigo-700"
-                  : "border-transparent text-slate-600 hover:border-slate-300 hover:text-slate-900"
-              }`}
+              className={styles.tab}
             >
               {tab.label}
             </button>

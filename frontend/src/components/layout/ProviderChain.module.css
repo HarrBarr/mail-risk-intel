@@ -1,0 +1,14 @@
+.chain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 6px;
+  padding: var(--sp-2) var(--sp-4);
+  border-top: 1px solid var(--c-line);
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  color: var(--c-faint);
+}
+.providers {
+  color: var(--c-accent);
+}

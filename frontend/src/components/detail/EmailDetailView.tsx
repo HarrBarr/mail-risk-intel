@@ -16,6 +16,7 @@ import { FailedNotice } from "./FailedNotice";
 import { OriginalContent } from "./OriginalContent";
 import { PipelineProgress } from "./PipelineProgress";
 import { ProcessingTrace } from "./ProcessingTrace";
+import styles from "./EmailDetailView.module.css";
 import { RiskCard } from "./RiskCard";
 
 interface Props {
@@ -45,7 +46,7 @@ export function EmailDetailView({ id, backTo }: Props) {
         icon="search"
         title="Email not found"
         action={
-          <Link to={backTo} className="btn-secondary">
+          <Link to={backTo} className="btn btn-secondary">
             <Icon name="chevronLeft" /> Back to inbox
           </Link>
         }
@@ -66,7 +67,7 @@ export function EmailDetailView({ id, backTo }: Props) {
   const running = isInFlight(email.status);
 
   return (
-    <article className="space-y-4" aria-busy={running || undefined}>
+    <article className={styles.article} aria-busy={running || undefined}>
       <DetailHeader ref={headingRef} email={email} backTo={backTo} />
       {email.status === "failed" ? <FailedNotice id={email.id} error={email.error} /> : null}
       {running ? <PipelineProgress status={email.status} /> : null}

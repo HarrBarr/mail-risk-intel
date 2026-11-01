@@ -1,0 +1,62 @@
+.legend {
+  border-radius: var(--r-md);
+  border: 1px solid var(--c-border);
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow-inset);
+  font-size: var(--fs-xs);
+}
+.summary {
+  padding: var(--sp-2) var(--sp-3);
+  cursor: pointer;
+  user-select: none;
+  border-radius: var(--r-md);
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--track-eyebrow);
+  color: var(--c-accent);
+}
+.summary::before {
+  content: "▸ ";
+}
+.legend[open] .summary::before {
+  content: "▾ ";
+}
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: 0 var(--sp-3) var(--sp-3);
+}
+.caption {
+  margin-bottom: 4px;
+  color: var(--c-faint);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px var(--sp-3);
+}
+.item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--c-muted);
+}
+.fill,
+.ring {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+.fill {
+  background: var(--tone);
+}
+/* Mirrors the canvas: dark gap, then the colored ring. */
+.ring {
+  border: 2px solid var(--tone);
+  background: var(--c-bg);
+}

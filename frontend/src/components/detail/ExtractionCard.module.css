@@ -1,0 +1,68 @@
+.facts {
+  display: grid;
+  gap: var(--sp-3);
+}
+@media (min-width: 640px) {
+  .facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.group {
+  padding: 10px var(--sp-3);
+}
+.groupTitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--track-eyebrow);
+  color: var(--c-muted);
+}
+.groupTitle :global(.count) {
+  margin-left: 0;
+}
+.factList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+}
+.value {
+  overflow-wrap: anywhere;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--c-text);
+}
+.context {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: var(--fs-xs);
+  color: var(--c-faint);
+}
+.attachment {
+  padding: 10px var(--sp-3);
+}
+.filename {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: var(--c-text);
+}
+.filename svg {
+  color: var(--c-muted);
+}
+.filename span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+.attSummary {
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+  color: var(--c-muted);
+}

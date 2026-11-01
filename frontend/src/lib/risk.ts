@@ -6,48 +6,41 @@ export const RISK_RANK: Record<Level, number> = { none: 0, low: 1, medium: 2, hi
 
 interface RiskMeta {
   label: string;
-  /** Tailwind classes for the badge (tinted background, dark text: >= 7:1 contrast). */
-  badge: string;
-  /** Solid swatch for meters/dots. */
-  dot: string;
-  /** Hex for canvas drawing (graph rings). */
+  /** CSS custom property for DOM styling (see styles/tokens.css). */
+  cssVar: string;
+  /** Hex for canvas drawing (graph rings) — mirrors the token value. */
   hex: string;
   description: string;
 }
 
 /*
- * Palette: emerald / sky / amber / red. Chosen so adjacent levels differ in hue *and*
- * lightness (blue vs amber is safe for the common red-green deficiencies), and every
- * badge also carries its level as text plus a 0–3 bar meter, so color is never the
- * only signal.
+ * Palette (dark theme): none = ok mint-green, low = info blue, medium = warn amber,
+ * high = alarm red-pink. Adjacent levels differ in hue *and* lightness; every badge
+ * also carries its level as text plus a 0–3 bar meter, so color is never the only signal.
  */
 export const RISK_META: Record<Level, RiskMeta> = {
   none: {
     label: "No risk",
-    badge: "bg-emerald-50 text-emerald-800 ring-emerald-600/30",
-    dot: "bg-emerald-600",
-    hex: "#059669",
+    cssVar: "var(--risk-none)",
+    hex: "#8BF0B0",
     description: "No risk indicators found",
   },
   low: {
     label: "Low",
-    badge: "bg-sky-50 text-sky-800 ring-sky-600/30",
-    dot: "bg-sky-600",
-    hex: "#0284c7",
+    cssVar: "var(--risk-low)",
+    hex: "#8FC8FF",
     description: "Minor indicators, worth a glance",
   },
   medium: {
     label: "Medium",
-    badge: "bg-amber-50 text-amber-900 ring-amber-600/40",
-    dot: "bg-amber-500",
-    hex: "#d97706",
+    cssVar: "var(--risk-medium)",
+    hex: "#FFC48A",
     description: "Needs review",
   },
   high: {
     label: "High",
-    badge: "bg-red-50 text-red-800 ring-red-600/30",
-    dot: "bg-red-600",
-    hex: "#dc2626",
+    cssVar: "var(--risk-high)",
+    hex: "#FF6B8A",
     description: "Likely fraud, leak or policy breach",
   },
 };

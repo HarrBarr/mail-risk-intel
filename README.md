@@ -5,7 +5,7 @@ chained LLM agents extract **who is involved and what they want**, then assess *
 **knowledge graph** of people, organisations, money and accounts across the whole mailbox.
 
 - **Backend:** Python 3.12, FastAPI, LangGraph, SQLAlchemy on SQLite (WAL), separate worker process
-- **Frontend:** React 18 + TypeScript, Vite, TanStack Query, zod, Tailwind CSS, react-force-graph-2d
+- **Frontend:** React 18 + TypeScript, Vite, TanStack Query, zod, CSS Modules + design tokens, react-force-graph-2d
 - **LLM:** Groq free tier by default; Gemini free tier or a fully local Ollama model as alternatives;
   a deterministic rules engine when no model is reachable. **No paid key is needed.**
 
@@ -169,7 +169,7 @@ blocks an HTTP request, and the API stays usable when every LLM is down.
 | Deterministic signals alongside the LLM | Lookalike domains and account changes are facts that code verifies more reliably than a model does; they also drive the offline fallback | Keyword lists are English-only and brittle. They are evidence fed to the LLM, not the verdict |
 | Separate worker process + SQLite WAL | Ingestion stays fast and LLM latency never reaches the HTTP layer; the worker can crash and resume (`recover_in_flight`) | SQLite limits concurrent writers. Fine at this scale; Postgres + a real queue for production |
 | Polling, not websockets | Simple and robust; polling stops once nothing is in flight | Up to ~2 s of UI lag |
-| Tailwind CSS | A constrained scale for spacing, type and colour gives consistency quickly, and styles stay next to markup in a small app | Long class strings; a component library would be next as the UI grows |
+| CSS Modules + one token file (`frontend/src/styles/tokens.css`) | The UI follows a defined brand (the "Northern lights" dark palette: glass surfaces, Sora/Inter/JetBrains Mono). Encoding it once as CSS custom properties, with scoped per-component modules, keeps every surface on-brand with no runtime cost, no utility-class noise and no extra dependency (Vite handles modules natively). Fonts are self-hosted, so there are no external requests | Canvas colours for the graph have to be mirrored in TS. Tints rely on `color-mix()` (Chrome 111+, Safari 16.2+, Firefox 113+). The first version used Tailwind; see PROCESS.md §3.6 |
 
 **Assumptions.** The organisation's own domain is `arcline.com` (`ORG_DOMAIN`). A standalone PDF
 is treated as a document dropped into the mailbox, not an email. Risk "none" means routine mail,

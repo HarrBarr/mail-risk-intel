@@ -1,0 +1,59 @@
+/* A vertical timeline: a hairline rail with a node per step. */
+.steps {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.step {
+  position: relative;
+  padding: 10px var(--sp-3) 10px var(--sp-6);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-md);
+  background: rgb(var(--rgb-deep) / 0.35);
+}
+.step::before {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: 17px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--c-aur1);
+  box-shadow: 0 0 10px rgb(var(--rgb-aur1) / 0.8);
+}
+.stepRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px var(--sp-3);
+}
+.stepName {
+  font-weight: 600;
+  color: var(--c-text);
+}
+.outcome {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 9px;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tone) 35%, transparent);
+}
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px var(--sp-3);
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  color: var(--c-faint);
+}
+.error > summary {
+  color: var(--c-alarm);
+}

@@ -1,8 +1,12 @@
-export function Spinner({ className = "h-3.5 w-3.5", label }: { className?: string; label?: string }) {
+import styles from "./Spinner.module.css";
+
+export function Spinner({ size = 14, label }: { size?: number; label?: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
-      className={`shrink-0 animate-spin ${className}`}
+      width={size}
+      height={size}
+      className={styles.spinner}
       role={label ? "status" : undefined}
       aria-label={label}
       aria-hidden={label ? undefined : true}

@@ -1,0 +1,25 @@
+/* Segmented pill control. */
+.group {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--c-border);
+  background: var(--c-fill-1);
+}
+.option {
+  padding: 5px 12px;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--c-muted);
+  transition:
+    background-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+.option:hover {
+  color: var(--c-text);
+}
+.option[aria-pressed="true"] {
+  background: var(--c-text);
+  color: var(--c-bg);
+}

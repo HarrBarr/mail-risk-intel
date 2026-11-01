@@ -31,7 +31,8 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
-    css: false,
+    // Process CSS Modules with stable, readable class names ("high", "badge") so tests can assert them.
+    css: { include: [/\.module\.css$/], modules: { classNameStrategy: "non-scoped" } },
     include: ["src/**/*.test.{ts,tsx}"],
   },
 });

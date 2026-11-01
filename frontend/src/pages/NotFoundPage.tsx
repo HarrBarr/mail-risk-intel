@@ -8,7 +8,7 @@ export function NotFoundPage() {
       icon="search"
       title="Page not found"
       action={
-        <Link to="/" className="btn-secondary">
+        <Link to="/" className="btn btn-secondary">
           Back to inbox
         </Link>
       }

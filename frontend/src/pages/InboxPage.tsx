@@ -10,10 +10,12 @@ import { ProviderChain } from "@/components/layout/ProviderChain";
 import { pluralize } from "@/lib/format";
 import { useInboxFilters } from "@/lib/useInboxFilters";
 
+import styles from "./InboxPage.module.css";
+
 /**
- * Master–detail. From `md` up: list column + detail pane, each scrolling on its own.
- * Below `md`: only one is shown — the list at "/", the detail at "/emails/:id" (with a
- * back link). Pure CSS switching keyed on the route, so no resize listeners.
+ * Master–detail. From 768px up: list column + detail pane, each scrolling on its own.
+ * Below 768px: only one is shown — the list at "/", the detail at "/emails/:id" (with a
+ * back link). Pure CSS switching keyed on the route (`data-has-selection`), no resize listeners.
  */
 export function InboxPage() {
   const { id } = useParams<{ id: string }>();
@@ -22,34 +24,27 @@ export function InboxPage() {
   const clear = useCallback(() => update({ risk: undefined, q: "" }), [update]);
 
   return (
-    <div className="mx-auto flex h-full max-w-screen-2xl">
-      <section
-        aria-labelledby="inbox-heading"
-        className={`${id ? "hidden md:flex" : "flex"} w-full shrink-0 flex-col border-slate-200 bg-white md:w-80 md:border-r lg:w-96`}
-      >
-        <div className="flex items-baseline justify-between px-4 pt-4">
-          <h1 id="inbox-heading" className="text-lg font-semibold text-slate-900">
+    <div className={styles.page} data-has-selection={id ? "true" : "false"}>
+      <section aria-labelledby="inbox-heading" className={styles.list}>
+        <div className={styles.listHead}>
+          <h1 id="inbox-heading" className={styles.heading}>
             Inbox
           </h1>
           {query.data ? (
-            <span className="text-xs text-slate-500" aria-live="polite">
+            <span className={styles.total} aria-live="polite">
               {pluralize(query.data.total, "email")}
             </span>
           ) : null}
         </div>
         <InboxFilters filters={filters} onChange={update} />
-        <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className={styles.listScroll}>
           <EmailList query={query} filters={filters} selectedId={id} search={search} onClearFilters={clear} />
         </div>
-        <ProviderChain className="border-t border-slate-200 px-4 py-2" />
+        <ProviderChain />
       </section>
 
-      <section
-        aria-label="Email detail"
-        className={`${id ? "block" : "hidden md:block"} min-w-0 flex-1 overflow-y-auto`}
-        key={id ?? "none"}
-      >
-        <div className="mx-auto max-w-4xl px-4 py-4 sm:px-6 sm:py-6">
+      <section aria-label="Email detail" className={styles.detail} key={id ?? "none"}>
+        <div className={styles.detailInner}>
           {id ? (
             <EmailDetailView id={id} backTo={`/${search}`} />
           ) : (

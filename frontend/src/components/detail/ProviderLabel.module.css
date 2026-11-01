@@ -1,0 +1,11 @@
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  color: var(--c-faint);
+}
+.provider {
+  color: var(--c-accent);
+}
+.model {
+  color: var(--c-muted);
+}

@@ -1,0 +1,61 @@
+.card {
+  position: relative;
+  overflow: hidden;
+  padding: var(--sp-5);
+}
+/* Thin aurora progress line that sweeps across the top edge. */
+.progressLine {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: var(--aurora);
+  background-size: 200% 100%;
+  animation: sweep 2.4s linear infinite;
+}
+@keyframes sweep {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+.title {
+  font-size: var(--fs-lg);
+}
+.status {
+  margin-top: 2px;
+  color: var(--c-muted);
+}
+.stages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-4);
+  margin-top: var(--sp-3);
+}
+.stage {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--c-faint);
+}
+.stage[data-state="done"] {
+  color: var(--c-ok);
+}
+.stage[data-state="active"] {
+  color: var(--c-accent);
+}
+.todoDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid var(--c-border-strong);
+}
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin-top: var(--sp-5);
+}

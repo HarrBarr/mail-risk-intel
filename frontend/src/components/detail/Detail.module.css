@@ -1,0 +1,108 @@
+/* Shared building blocks for the detail cards. */
+.section {
+  margin-top: var(--sp-5);
+}
+.section:first-child {
+  margin-top: 0;
+}
+.label {
+  display: block;
+  margin-bottom: var(--sp-2);
+}
+.prose {
+  overflow-wrap: anywhere;
+  font-size: var(--fs-lg);
+  line-height: 1.65;
+  color: var(--c-text);
+  opacity: 0.92;
+  white-space: pre-line;
+}
+.muted {
+  color: var(--c-faint);
+  font-size: var(--fs-md);
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* Inner boxes: a lighter glass than the card itself. */
+.box {
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-md);
+  background: rgb(var(--rgb-deep) / 0.35);
+}
+.rows > li + li {
+  border-top: 1px solid var(--c-line);
+}
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.pre {
+  max-height: 15rem;
+  overflow: auto;
+  margin-top: var(--sp-2);
+  padding: var(--sp-3);
+  border-radius: var(--r-sm);
+  background: rgb(var(--rgb-deep) / 0.6);
+  border: 1px solid var(--c-line);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  line-height: 1.6;
+  color: var(--c-muted);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.disclosure {
+  margin-top: var(--sp-2);
+}
+.disclosure > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--c-accent);
+}
+.disclosure > summary:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.disclosure > summary svg {
+  transition: transform var(--dur) var(--ease);
+}
+.disclosure[open] > summary svg {
+  transform: rotate(90deg);
+}
+
+/* Callout: tinted glass with a status tone. */
+.callout {
+  --tone: var(--c-warn);
+  display: flex;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-md);
+  border: 1px solid color-mix(in srgb, var(--tone) 35%, transparent);
+  background: color-mix(in srgb, var(--tone) 9%, transparent);
+  color: var(--c-text);
+  font-size: var(--fs-md);
+}
+.callout > svg {
+  margin-top: 2px;
+  color: var(--tone);
+}
+.callout strong {
+  color: var(--tone);
+}

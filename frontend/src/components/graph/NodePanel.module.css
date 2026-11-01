@@ -1,0 +1,117 @@
+.panel {
+  padding: var(--sp-5) var(--sp-4);
+}
+.head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+}
+.headText {
+  flex: 1;
+  min-width: 0;
+}
+.name {
+  overflow-wrap: anywhere;
+  font-size: var(--fs-xl);
+  letter-spacing: var(--track-display);
+}
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--c-muted);
+}
+.attrs {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 2px var(--sp-3);
+  margin-top: var(--sp-3);
+  font-size: var(--fs-xs);
+}
+.attrs dt {
+  color: var(--c-faint);
+}
+.attrs dd {
+  overflow-wrap: anywhere;
+  font-family: var(--font-mono);
+  color: var(--c-muted);
+}
+.none {
+  margin-top: var(--sp-4);
+  color: var(--c-faint);
+}
+.section {
+  margin-top: var(--sp-5);
+}
+.sectionTitle {
+  margin-bottom: var(--sp-2);
+}
+.connections {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.connection {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  width: 100%;
+  padding: 7px var(--sp-2);
+  border-radius: var(--r-sm);
+  text-align: left;
+  transition: background-color var(--dur) var(--ease);
+}
+.connection:hover {
+  background: var(--c-fill-2);
+}
+.connectionText {
+  flex: 1;
+  min-width: 0;
+}
+.edge,
+.otherName,
+.otherType {
+  display: block;
+}
+.edge {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  color: #cfc9ff;
+}
+.otherName {
+  overflow-wrap: anywhere;
+  font-weight: 600;
+  color: var(--c-text);
+}
+.otherType {
+  font-size: var(--fs-xs);
+  color: var(--c-faint);
+}
+.emails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.emailLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  border: 1px solid rgb(var(--rgb-accent) / 0.3);
+  background: rgb(var(--rgb-accent) / 0.06);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--c-accent);
+  transition:
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+.emailLink:hover {
+  background: rgb(var(--rgb-accent) / 0.14);
+  border-color: rgb(var(--rgb-accent) / 0.55);
+}

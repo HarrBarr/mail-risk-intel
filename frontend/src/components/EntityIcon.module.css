@@ -1,0 +1,23 @@
+.tile {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-sm);
+  color: color-mix(in srgb, var(--tone) 72%, white);
+  background: color-mix(in srgb, var(--tone) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tone) 32%, transparent);
+}
+.sm {
+  width: 24px;
+  height: 24px;
+}
+.md {
+  width: 28px;
+  height: 28px;
+}
+.lg {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r-md);
+}

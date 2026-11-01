@@ -1,0 +1,51 @@
+/* Glass strip with a colored status dot. */
+.banner {
+  --tone: var(--c-warn);
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--c-line);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--tone) 10%, transparent),
+    rgb(var(--rgb-panel) / 0.5) 60%
+  );
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  color: var(--c-muted);
+}
+.warn {
+  --tone: var(--c-warn);
+}
+.alarm {
+  --tone: var(--c-alarm);
+}
+.inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: var(--sp-2) var(--sp-4);
+  font-size: var(--fs-sm);
+}
+.inner > :global(.dot) {
+  color: var(--tone);
+  box-shadow: 0 0 10px var(--tone);
+}
+.text {
+  flex: 1;
+  min-width: 0;
+}
+.text strong {
+  color: var(--tone);
+  font-weight: 600;
+}
+.action {
+  padding: 4px 12px;
+  border-radius: var(--r-pill);
+  border: 1px solid color-mix(in srgb, var(--tone) 45%, transparent);
+  color: var(--tone);
+  font-weight: 600;
+}
+.action:hover {
+  background: color-mix(in srgb, var(--tone) 12%, transparent);
+}

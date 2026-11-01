@@ -11,8 +11,8 @@ const GraphPage = lazy(() => import("./pages/GraphPage"));
 
 function PageFallback() {
   return (
-    <div className="flex h-full items-center justify-center text-slate-500">
-      <Spinner className="h-5 w-5" label="Loading" />
+    <div style={{ display: "grid", placeItems: "center", height: "100%", color: "var(--c-muted)" }}>
+      <Spinner size={20} label="Loading" />
     </div>
   );
 }
