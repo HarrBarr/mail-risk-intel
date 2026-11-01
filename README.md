@@ -265,4 +265,6 @@ before/after. On CPU a 7B model takes 2–10 minutes per email, which is why Gro
 
 ## Time spent
 
-<!-- Fill in honestly before submitting. -->
+About **4 hours of hands-on time**: planning, drafting the development guide, decisions, review and
+testing. The AI-assisted build session itself ran about 6¾ hours of wall-clock time, much of it
+unattended agent work and slow local-model evaluation. `PROCESS.md` has the breakdown.

@@ -1,15 +1,17 @@
 # PROCESS: how this was built with AI tooling
 
-> **Candidate's note:** the account below was assembled from the agent session's own record:
-> commits, test runs and the hand-off reports. Add your own perspective where marked ✍️.
+> Sections 1 and 3.7 are my own account. The rest was compiled from the agent session's record
+> (commits, test runs, the sub-agent's hand-off reports) and reviewed by me.
 
 ## Tools
 
+- **Grok** (xAI chat assistant) to read and summarise the assignment, before any planning.
 - **Claude Code** (terminal agent, Claude Opus 5.5) as the main implementer and orchestrator.
 - **One delegated sub-agent** (Claude Code `general-purpose` agent) for the React frontend, run in
   parallel with backend work.
 - **A local LLM** (`qwen2.5:7b` via Ollama) as the "real model" test bench for prompts, because it
-  is the weakest model a reviewer might plausibly use. If prompts work there, they work on Groq's 70B.
+  is the weakest model a reviewer might plausibly use. If prompts work there, they should hold on
+  the larger hosted model (Groq `openai/gpt-oss-120b`), and that was then confirmed live (§3.5).
 
 ## 1. Planning before any code
 
@@ -18,8 +20,24 @@ It fixes the stack, service layout, pipeline diagram, data model, API, env vars,
 checklist and a 14-step build order. The agent was told to follow it, and it treated it as the
 spec; every deviation is listed below.
 
-✍️ *How the development guide itself was produced (by hand, or drafted with an AI and edited), and
-what you deliberately put in it to steer the agent.*
+**How I produced the guide.** I had Grok read the assignment email together with the brief and the
+mock JSON data, and summarise the task for me. From that summary I broke the implementation down into
+the parts the brief asks for (ingestion, the two agents, storage, API, UI) and listed the stack
+options for each: FastAPI or Express; Groq, Gemini or Ollama; SQLite, a JSON file or in-memory; and
+how to orchestrate the agents. I chose the stack and the development plan, then drafted
+`MailRiskIntel-development.md` myself as the spec for the coding agent. Finally, I had Claude Code
+build the Docker Compose app from it.
+
+What I put in the guide on purpose, to steer the agent:
+- **Docker-only for reviewers.** Running the app needs nothing but Docker.
+- **Three no-cost runtime modes, including a rules fallback that always works.** That way the app
+  can't break because of a model.
+- **An explicit failure-handling checklist.** Timeouts, invalid JSON, 429s, bad uploads, one failing
+  email, no provider configured.
+- **A development-only override for a different model.** The reviewer-facing default stays on the
+  free tier.
+- **A numbered build order ending in a fresh-clone check.** That way "done" means a reviewer can
+  actually run it.
 
 The session started with the agent reading only the brief and the seed data, and summarising
 **what a correct pipeline should flag for each of the 10 seed emails**: an expected-results table
@@ -183,9 +201,26 @@ The sub-agent caught one problem of its own from screenshots: it had made the "a
 the brand pink, which blended into the high-risk ring that most nodes carry, so it changed it. The main
 agent re-ran lint, tests and build, and reviewed the screenshots, before rebuilding the Docker stack.
 
-✍️ *Any points where you, the human, stepped in: re-scoped, rejected an approach, asked for
-something different. The session above contains the decisions you made up front (track, repo, plan,
-identity, visibility); add anything you changed after reviewing the result.*
+### 3.7 Where I stepped in
+
+The agent ran autonomously within each task. These were my decisions and redirections:
+
+- **Setup.** I chose the full-stack/pipeline track. I put the repo in my personal space
+  (`/home/private_project`, GitHub `HarrBarr`, not my organisation's account), and told the agent to
+  follow my development guide as the spec. I picked the GitHub noreply address as the commit identity
+  so my work email stays off a public repo, and made the repo public.
+- **Testing the default path for real.** The agent reported that Groq, the reviewer-facing default,
+  was *untested* rather than claiming it worked. I supplied a free Groq key so it could be exercised
+  live. That run exposed the retired model and the Groq-specific failure modes (§3.5).
+- **Not shipping a key.** I asked whether a key could be stored as a repository secret so reviewers
+  could run Groq without seeing it. The agent explained that secrets never reach a clone and that
+  any key on a reviewer's machine is readable. I decided reviewers bring their own free key, with the
+  rules fallback and Ollama as no-key paths.
+- **Checking the UI myself.** I asked for the full stack in Docker with Groq so I could review the UI.
+  Doing that surfaced two bugs before I looked: Docker Compose reading `.env` comments as values, and
+  the model over-flagging the routine invoice E009 (§3.5).
+- **Brand restyle.** I asked for a "glow up": remove Tailwind and apply my brand-directions palette
+  (§3.6).
 
 ## 4. Deviations from the plan
 
@@ -202,7 +237,7 @@ identity, visibility); add anything you changed after reviewing the result.*
 
 | Check | Result |
 |---|---|
-| Backend `pytest` (no network) | 82 passed; `pytest -m live` is opt-in |
+| Backend `pytest` (no network) | 85 passed; `pytest -m live` (3 real-Groq tests) passes |
 | `ruff`, `mypy` (backend) | clean |
 | Frontend `vitest`, `eslint`, `tsc` + `vite build` | 27 passed, clean, builds |
 | Rules-only run of the seed set | E001/E003/E004/E005/E006/E008 high, E010 medium, E002/E007/E009 none |
@@ -211,7 +246,10 @@ identity, visibility); add anything you changed after reviewing the result.*
 | Fresh clone → `docker compose up --build` | all services healthy, seed processed, uploads OK, SPA routes OK |
 | Headless browser at 1366px and 375px | no overflow, no console errors |
 
-✍️ **Honest time spent:** *fill in.*
+**Time spent:** about **4 hours of my own hands-on time** (planning and drafting the guide,
+decisions, review and testing). The AI session ran about 6¾ hours of wall-clock time in total. The
+difference is unattended agent and model runtime, mostly CPU-bound local-model evaluation at
+several minutes per email, and the sub-agent building the frontend in parallel.
 
 ---
 
