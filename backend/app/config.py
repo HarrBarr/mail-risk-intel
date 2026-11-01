@@ -10,7 +10,8 @@ Provider = Literal["groq", "gemini", "ollama", "openai", "anthropic", "none"]
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    # The repo-root .env (shared with docker compose) and then backend/.env; later files win.
+    model_config = SettingsConfigDict(env_file=("../.env", ".env"), extra="ignore")
 
     APP_ENV: Literal["production", "development"] = "production"
 

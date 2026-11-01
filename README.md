@@ -41,7 +41,7 @@ API docs (OpenAPI) are at http://localhost:8000/docs.
 
 ```bash
 cd backend && uv venv --python 3.12 && uv pip install -e ".[dev]"
-cp ../.env.example .env                                  # edit as above; OLLAMA_BASE_URL=http://localhost:11434
+# uses the repo-root .env (see Quick start); natively set OLLAMA_BASE_URL=http://localhost:11434
 .venv/bin/uvicorn app.main:app --reload --port 8000      # terminal 1 (creates the DB and seeds it)
 .venv/bin/python -m app.worker                           # terminal 2
 cd ../frontend && npm ci && npm run dev                  # terminal 3 -> http://localhost:5173
