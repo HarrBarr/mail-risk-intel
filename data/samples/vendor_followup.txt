@@ -1,0 +1,6 @@
+From: billing@northgate-suppliers.com
+To: accounts-payable@arcline.com
+Subject: Re: Invoice #NS-4188 - payment received
+Date: 2026-05-20T09:12:00Z
+
+Hi team, confirming we received payment of $13,900.00 for invoice NS-4188 to our account ending 6621. Thanks as always.
