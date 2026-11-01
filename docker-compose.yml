@@ -1,0 +1,63 @@
+# Demo: `docker compose up --build` -> http://localhost:8080
+# Fully local LLM: `docker compose --profile local up --build`
+x-backend: &backend
+  build:
+    context: ./backend
+  env_file:
+    - path: .env
+      required: false
+  environment:
+    DATABASE_URL: sqlite:////data/app.db
+    SEED_FILE: /data/seed/mock_mailbox_data.json
+  volumes:
+    - db-data:/data
+    - ./data:/data/seed:ro
+  extra_hosts:
+    - "host.docker.internal:host-gateway"  # lets OLLAMA_BASE_URL point at an Ollama on the host
+  restart: unless-stopped
+
+services:
+  api:
+    <<: *backend
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  worker:
+    <<: *backend
+    command: ["python", "-m", "app.worker"]
+    depends_on:
+      api:
+        condition: service_healthy  # api creates the schema and seeds first
+
+  web:
+    build:
+      context: ./frontend
+    ports:
+      - "8080:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:0.5.4
+    profiles: [local]
+    volumes:
+      - ollama-models:/root/.ollama
+    entrypoint: ["/bin/sh", "-c"]
+    # Serve, then pull the configured model once (cached in the volume).
+    command: ["ollama serve & sleep 3 && ollama pull ${OLLAMA_MODEL:-llama3.1:8b} && wait"]
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+volumes:
+  db-data:
+  ollama-models:
