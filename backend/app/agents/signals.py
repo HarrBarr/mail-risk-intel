@@ -29,7 +29,7 @@ PERSONAL_DOMAINS = {
     "mail.com",
 }
 
-AMOUNT_RE = re.compile(r"\$\s?\d[\d,]*(?:\.\d+)?(?:\s?(?:[KkMm]\b|million|thousand))?", re.IGNORECASE)
+AMOUNT_RE = re.compile(r"\$\s?\d+(?:,\d{3})*(?:\.\d+)?(?:\s?(?:[KkMm]\b|million|thousand))?", re.IGNORECASE)
 ACCOUNT_RE = re.compile(r"account\s+(?:ending(?:\s+in)?|no\.?|number|#)\s*:?\s*(\d{3,})", re.IGNORECASE)
 ROUTING_RE = re.compile(r"routing\s*(?:number|no\.?|#)?\s*:?\s*(\d{9})\b", re.IGNORECASE)
 REFERENCE_RE = re.compile(r"\b[A-Z]{2,5}-\d{3,}\b")

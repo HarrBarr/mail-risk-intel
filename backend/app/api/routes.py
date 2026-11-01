@@ -73,7 +73,8 @@ def list_emails(
     offset: Annotated[int, Query(ge=0)] = 0,
 ) -> s.EmailList:
     items, total = repo.list_emails(session, risk=risk, status=status_, q=q, limit=limit, offset=offset)
-    return s.EmailList(items=[_summary(e) for e in items], total=total)
+    in_flight = repo.count_in_flight(session)
+    return s.EmailList(items=[_summary(e) for e in items], total=total, in_flight=in_flight)
 
 
 @router.post("/emails", response_model=s.Accepted, status_code=status.HTTP_202_ACCEPTED)

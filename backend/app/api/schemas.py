@@ -1,11 +1,19 @@
 """HTTP response/request models: the API contract the frontend validates against (with zod)."""
 
-from datetime import datetime
-from typing import Any, Literal
+from datetime import UTC, datetime
+from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import AfterValidator, BaseModel, Field
 
 from app.agents.schemas import ExtractionResult
+
+
+def _as_utc(value: datetime | None) -> datetime | None:
+    return value.replace(tzinfo=UTC) if value is not None and value.tzinfo is None else value
+
+
+UTCDateTime = Annotated[datetime, AfterValidator(_as_utc)]
+
 
 Status = Literal["pending", "extracting", "assessing", "done", "failed"]
 Level = Literal["none", "low", "medium", "high"]
@@ -16,7 +24,7 @@ class EmailSummary(BaseModel):
     source: str
     sender: str
     subject: str
-    date: datetime | None
+    date: UTCDateTime | None
     status: Status
     risk_level: Level | None
     risk_tags: list[str]
@@ -28,6 +36,7 @@ class EmailSummary(BaseModel):
 class EmailList(BaseModel):
     items: list[EmailSummary]
     total: int
+    in_flight: int  # mailbox-wide, ignoring filters: lets the UI keep polling under a risk filter
 
 
 class Attachment(BaseModel):
@@ -82,7 +91,7 @@ class StepOut(BaseModel):
     latency_ms: int
     outcome: str
     error: str | None
-    created_at: datetime
+    created_at: UTCDateTime
 
 
 class EmailDetail(BaseModel):
@@ -91,7 +100,7 @@ class EmailDetail(BaseModel):
     sender: str
     recipients: list[str]
     subject: str
-    date: datetime | None
+    date: UTCDateTime | None
     status: Status
     error: str | None
     raw_content: str

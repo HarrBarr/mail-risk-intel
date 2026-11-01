@@ -95,6 +95,11 @@ def get_email(session: Session, email_id: str) -> Email | None:
     )
 
 
+def count_in_flight(session: Session) -> int:
+    queued = (EmailStatus.PENDING, *EmailStatus.IN_FLIGHT)
+    return session.scalar(select(func.count()).select_from(Email).where(Email.status.in_(queued))) or 0
+
+
 def claim_pending(session: Session, limit: int) -> list[str]:
     """Atomically move up to `limit` pending emails to 'extracting' and return their ids.
 

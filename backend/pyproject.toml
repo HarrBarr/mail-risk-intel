@@ -54,6 +54,9 @@ target-version = "py312"
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
 
+[tool.ruff.lint.per-file-ignores]
+"app/agents/risk_graph.py" = ["E501"]  # prompt text and its JSON example
+
 [tool.mypy]
 python_version = "3.12"
 ignore_missing_imports = true

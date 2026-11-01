@@ -31,6 +31,7 @@ def test_seeded_inbox_lists_newest_first(client: TestClient) -> None:
     body = client.get("/api/emails").json()
     assert body["total"] == 10
     assert body["items"][0]["id"] == "E010" and body["items"][-1]["id"] == "E009"
+    assert body["in_flight"] == 10 and body["items"][0]["date"].endswith("Z")
     assert all(item["status"] == "pending" and item["risk_level"] is None for item in body["items"])
 
 
